@@ -73,7 +73,7 @@ console.log("048494958594");
 
 // main handler
 bot.on("message:text", async (ctx) => {
-  if (!isOwner(ctx)) return;
+  //if (!isOwner(ctx)) return;
 
   if (!execState.get(ctx.from.id)) return;
 
