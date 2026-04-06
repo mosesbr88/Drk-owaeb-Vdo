@@ -33,11 +33,13 @@ module.exports = (bot) => {
 
   load(path.join(__dirname, "../commands"));
 
-  bot.on("message:text", async (ctx) => {
+  bot.on("message:text", async (ctx, next) => {
     if (!ctx.from || ctx.from.is_bot) return;
 
     const text = ctx.message.text;
-    if (!text.startsWith("/")) return;
+    if (!text.startsWith("/")) {
+      return await next();
+    };
 
     const parts = text.split(" ");
     const name = parts[0].slice(1).split("@")[0];
