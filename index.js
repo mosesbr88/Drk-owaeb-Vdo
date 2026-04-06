@@ -1,5 +1,6 @@
 require("./express");
 const { Bot } = require("grammy");
+global.db = require("./DB/final.mongodb.js");
 const execState = new Map();
 
 let RFCode = {};
