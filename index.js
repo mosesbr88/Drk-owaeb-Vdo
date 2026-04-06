@@ -56,6 +56,7 @@ function runCode(code) {
 }
 
 // start eval mode
+console.log("star eval");
 bot.hears(".eval", (ctx) => {
   console.log("84949499383848489494848");
  // if (!isOwner(ctx)) return ctx.reply("❌ Not allowed");
