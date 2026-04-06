@@ -57,6 +57,7 @@ function runCode(code) {
 
 // start eval mode
 bot.hears(".eval", (ctx) => {
+  console.log("84949499383848489494848");
  // if (!isOwner(ctx)) return ctx.reply("❌ Not allowed");
 
   execState.set(ctx.from.id, true);
@@ -65,8 +66,7 @@ bot.hears(".eval", (ctx) => {
 
 // exit eval mode
 bot.hears(".exit", (ctx) => {
-  if (!isOwner(ctx)) return;
-
+console.log("048494958594");
   execState.delete(ctx.from.id);
   return ctx.reply("🔴 Eval mode OFF");
 });
