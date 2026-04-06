@@ -1,0 +1,12 @@
+{
+  "name": "grammy-bot",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "dev": "nodemon index.js"
+  },
+  "dependencies": {
+    "grammy": "^1.20.0",
+    "express": "^5.2.1"
+  }
+}
