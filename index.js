@@ -57,7 +57,7 @@ function runCode(code) {
 
 // start eval mode
 bot.hears(".eval", (ctx) => {
-  if (!isOwner(ctx)) return ctx.reply("❌ Not allowed");
+ // if (!isOwner(ctx)) return ctx.reply("❌ Not allowed");
 
   execState.set(ctx.from.id, true);
   return ctx.reply("🟢 Eval mode ON\nSend code...\nType `.exit` to stop");
