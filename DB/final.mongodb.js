@@ -110,6 +110,11 @@ async function set(key, value) {
     const p = parse(key);
     const root = p.shift();
 
+    if (p.length === 0) {
+        await saveRoot(root, value);
+        return true;
+    }
+
     let data = (await getRoot(root)) || {};
     setN(data, p, value);
 
