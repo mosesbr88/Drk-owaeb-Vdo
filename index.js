@@ -23,7 +23,7 @@ require("./handlers/slashHandler")(bot);
 // bot.start();
 
 // capture console.log
-function runCode(code) {
+/*function runCode(code) {
   let logs = [];
 
   const fakeConsole = {
@@ -42,6 +42,40 @@ function runCode(code) {
     `);
 
     const result = fn(fakeConsole);
+
+    return {
+      output: logs.join("\n") || "✅ Executed",
+      result
+    };
+
+  } catch (err) {
+    return {
+      error: err.stack || err.message
+    };
+  }
+}*/
+
+async function runCode(code) {
+  let logs = [];
+
+  const fakeConsole = {
+    log: (...args) => {
+      logs.push(args.map(a => String(a)).join(" "));
+    }
+  };
+
+  try {
+    const fn = new Function("console", `
+      return (async () => {
+        try {
+          ${code}
+        } catch (e) {
+          throw e;
+        }
+      })();
+    `);
+
+    const result = await fn(fakeConsole);
 
     return {
       output: logs.join("\n") || "✅ Executed",
