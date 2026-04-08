@@ -33,7 +33,7 @@ module.exports = (bot) => {
 
   load(path.join(__dirname, "../commands"));
 
-  /*bot.on("message:text", async (ctx, next) => {
+  bot.on("message:text", async (ctx, next) => {
     if (!ctx.from || ctx.from.is_bot) return;
 
     const text = ctx.message.text;
@@ -52,5 +52,5 @@ module.exports = (bot) => {
     if (cmd.isAdmin && !(await isAdmin(ctx))) return ctx.reply("❌ Admin only");
 
     await cmd.execute(ctx, args, bot);
-  });*/
+  });
 };
