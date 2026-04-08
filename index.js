@@ -77,6 +77,9 @@ async function runCode(code) {
 
     const result = await fn(fakeConsole);
 
+    // 🟢 small delay so pending logs (microtasks/macrotasks) complete
+    await new Promise(res => setTimeout(res, 0));
+
     return {
       output: logs.join("\n") || "✅ Executed",
       result
