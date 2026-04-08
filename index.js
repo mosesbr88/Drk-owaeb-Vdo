@@ -11,7 +11,7 @@ const { token } = require("./config");
 const bot = new Bot(token);
 
 // middlewares
-bot.use(require("./middlewares/logger"));
+//bot.use(require("./middlewares/logger"));
 bot.use(require("./middlewares/session"));
 
 // handlers
