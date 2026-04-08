@@ -120,7 +120,7 @@ bot.on("message:text", async (ctx) => {
   // ignore commands
   if (text === ".eval" || text === ".exit") return;
 
-  const res = runCode(text);
+  const res = await runCode(text);
 
   if (res.error) {
     return ctx.reply(`❌ Error:\n\`\`\`\n${res.error}\n\`\`\``, {
