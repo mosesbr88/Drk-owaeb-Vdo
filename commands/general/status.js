@@ -4,7 +4,7 @@ module.exports = {
   name: "status",
   execute(ctx) {
     const pingStart = Date.now();
-    const msg = await ctx.reply("⏳ Checking status...");
+    const msg = await ctx.reply("```js ⏳ Checking status... ```", { parse_mode: "Javascript" });
     const ping = Date.now() - pingStart;
 
     const cpuLoad = os.loadavg()[0].toFixed(2);
@@ -35,6 +35,13 @@ module.exports = {
 ╰━━━━━━━━━━━━━━━━╯
   `;
 
-    ctx.reply(text, { parse_mode: "Markdown" });
+    await ctx.api.editMessageText(
+    ctx.chat.id,
+    msg.message_id,
+    text,
+    { parse_mode: "Markdown" }
+  );
+
+    //ctx.reply(text, { parse_mode: "Markdown" });
   }
 };
