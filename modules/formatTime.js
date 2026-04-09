@@ -1,3 +1,20 @@
+// 🔹 Format uptime
+function formatTime(ms) {
+  let s = Math.floor(ms / 1000);
+  let m = Math.floor(s / 60);
+  let h = Math.floor(m / 60);
+  let d = Math.floor(h / 24);
+
+  h %= 24;
+  m %= 60;
+  s %= 60;
+
+  return `${d}d ${h}h ${m}m ${s}s`;
+}
+global.formatTime = formatTime;
+
+
+/*
 const os = require("os");
 const fs = require("fs");
 
@@ -89,3 +106,4 @@ bot.command("status", async (ctx) => {
     { parse_mode: "Markdown" }
   );
 });
+*/
