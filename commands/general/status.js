@@ -14,7 +14,7 @@ module.exports = {
     const freeRAM = (os.freemem() / 1024 / 1024).toFixed(0);
     const usedRAM = totalRAM - freeRAM;
 
-    const totalCommands = bot.commands ? bot.commands.length : "N/A";
+    const totalCommands = bot.commands ? bot.commands.size : "N/A";
     
     let uptime = formatTime(Date.now() - serverStartTime);
     let usedStorage = ((await db.get("_file_size_") || 1200) / 1024).toFixed(0);
