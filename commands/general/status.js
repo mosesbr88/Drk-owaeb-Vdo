@@ -2,7 +2,7 @@ const os = require("os");
 
 module.exports = {
   name: "status",
-  async execute(ctx) {
+  async execute(ctx, args, bot) {
     const pingStart = Date.now();
     const msg = await ctx.reply("```js\n⏳ Checking status...\n```", { parse_mode: "MarkdownV2" });
     const ping = Date.now() - pingStart;
@@ -13,7 +13,8 @@ module.exports = {
     const totalRAM = (os.totalmem() / 1024 / 1024).toFixed(0);
     const freeRAM = (os.freemem() / 1024 / 1024).toFixed(0);
     const usedRAM = totalRAM - freeRAM;
-    
+
+    const totalCommands = bot.commands ? bot.commands.length : "N/A";
     
     let uptime = formatTime(Date.now() - serverStartTime);
     let usedStorage = ((await db.get("_file_size_") || 1200) / 1024).toFixed(0);
@@ -30,8 +31,8 @@ module.exports = {
 
 🗄️ *Database:* Connected 🟢
 
-📜 *Total Commands:* \`{totalCommands}\`
-⚙️ *Event Listeners:* \`{listeners}\`
+📜 *Total Commands:* \`${totalCommands}\`
+⚙️ *Event Listeners:* \`${bot.EventListenerCount ? bot.EventListenerCount : "N/A"}\`
 
 ╰━━━━━━━━━━━━━━━━╯
   `;
