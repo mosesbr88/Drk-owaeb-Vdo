@@ -3,7 +3,7 @@ module.exports = {
   description: "Start bot",
 
   async execute(ctx, args, bot) {
-    if(await db.get(`users[${ctx.from.id}]`)){
+    if(await db.get(`users.${ctx.from.id}`)){
       ctx.reply("💐 Welcome Back!");
       let deta = await db.get(`users.${ctx.from.id}`);
       // ctx.reply(JSON.stringify(deta));
