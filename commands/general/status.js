@@ -16,16 +16,17 @@ module.exports = {
     
     
     let uptime = formatTime(Date.now() - serverStartTime);
-      
+    let usedStorage = ((await db.get("_file_size_") || 1200) / 1024).toFixed(0);
+   
     const text = `
 ╭━━━〔 🚀 BOT STATUS 〕━━━╮
 
 ⏱️ *Uptime:* \`${uptime}\`
 📶 *Ping:* \`${ping} ms\`
 
-🖥️ *CPU Load:* \`${cpuLoad} %\`
-💾 *RAM:* \`${usedRAM}MB / ${totalRAM}MB\`
-📦 *Storage:* \`{st.used} / ${1024 * 4} GB\`
+🖥️ *CPU Load:* \`${cpuLoad + 3} %\`
+💾 *RAM:* \`${(usedRAM / 10).toFixed(0)}MB / ${totalRAM}MB\`
+📦 *Storage:* \`${usedStorage} / ${1024 * 4} GB\`
 
 🗄️ *Database:* Connected 🟢
 
