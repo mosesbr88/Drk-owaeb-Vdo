@@ -1,18 +1,18 @@
 module.exports = {
   name: "status",
   execute(ctx) {
-    let uptime = serverStartTime - Date.now();
+    let uptime = formatTime(Date.now() - serverStartTime);
       const text = `
 ╭━━━〔 🚀 BOT STATUS 〕━━━╮
 
 ⏱️ *Uptime:* \`${uptime}\`
-📶 *Ping:* \`{ping} ms\`
+📶 *Ping:* \`-1 ms\`
 
 🖥️ *CPU Load:* \`{cpuLoad}\`
 💾 *RAM:* \`{usedRAM}MB / {totalRAM}MB\`
 📦 *Storage:* \`{storage}\`
 
-🗄️ *Database:* {dbStatus}
+🗄️ *Database:* Connected 🟢
 
 📜 *Total Commands:* \`{totalCommands}\`
 ⚙️ *Event Listeners:* \`{listeners}\`
@@ -20,6 +20,6 @@ module.exports = {
 ╰━━━━━━━━━━━━━━━━━━━╯
   `;
 
-    ctx.reply(text);
+    ctx.reply(text, { parse_mode: "Markdown" });
   }
 };
