@@ -1,4 +1,5 @@
 global.serverStartTime = Date.now();
+require("./modules/formatTime.js");
 
 require("./express");
 const { Bot } = require("grammy");
