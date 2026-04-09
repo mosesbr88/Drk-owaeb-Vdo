@@ -15,6 +15,10 @@ const bot = new Bot(token);
 //bot.use(require("./middlewares/logger"));
 bot.use(require("./middlewares/session"));
 
+//tgLogger
+let tgLogger = require("./utils/tgLogger")(bot);
+
+
 // handlers
 require("./handlers/commandHandler")(bot);
 require("./handlers/buttonHandler")(bot);
@@ -112,5 +116,6 @@ console.log("🚀 Bot running...");
 bot.start({
   onStart: async (botInfo) => {
     console.log(`🤖|Logged in as @${botInfo.username} |✅`);
+    tgLogger.log(`I am Online ✅`);
   }
 });
