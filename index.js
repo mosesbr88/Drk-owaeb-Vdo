@@ -17,7 +17,7 @@ bot.use(require("./middlewares/session"));
 
 //tgLogger
 let tgLogger = require("./utils/tgLogger")(bot);
-
+global.tgLogger = tgLogger;
 
 // handlers
 require("./handlers/commandHandler")(bot);
