@@ -2,7 +2,7 @@ const os = require("os");
 
 module.exports = {
   name: "status",
-  execute(ctx) {
+  async execute(ctx) {
     const pingStart = Date.now();
     const msg = await ctx.reply("```js ⏳ Checking status... ```", { parse_mode: "Javascript" });
     const ping = Date.now() - pingStart;
