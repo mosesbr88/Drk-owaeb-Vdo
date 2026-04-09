@@ -94,13 +94,13 @@ async function runCode(code) {
 }
 
 // start eval mode
-bot.hears(".eval", (ctx) => {
+/*bot.hears(".eval", (ctx) => {
   console.log("84949499383848489494848");
  // if (!isOwner(ctx)) return ctx.reply("❌ Not allowed");
 
   execState.set(ctx.from.id, true);
   return ctx.reply("🟢 Eval mode ON\nSend code...\nType `.exit` to stop");
-});
+});*/
 
 // exit eval mode
 bot.hears(".exit", (ctx) => {
@@ -118,7 +118,7 @@ bot.on("message:text", async (ctx) => {
   const text = ctx.message.text;
 
   // ignore commands
-  if (text === ".eval" || text === ".exit") return;
+  if (text.startsWith("/") || text === ".exit") return;
 
   const res = await runCode(text);
 
