@@ -31,7 +31,7 @@ module.exports = {
       }
       const RFUser = await bot.api.getChat(RFCode[args[0]].createdBy);
       if(!RFUser){ return ctx.reply("⚠️ | Referal creator is not a valid user"); }
-      await db.set(`users.${ctx.from.id}.`{
+      await db.set(`users.${ctx.from.id}`, {
           $: 100,
           joined_at: Date.now(),
           ref_by: args[0],
