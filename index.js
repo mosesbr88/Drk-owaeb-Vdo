@@ -1,3 +1,4 @@
+const serverStartTime = Date.now();
 require("./express");
 const { Bot } = require("grammy");
 global.db = require("./DB/final.mongodb.js");
