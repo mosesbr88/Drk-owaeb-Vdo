@@ -17,7 +17,7 @@ module.exports = {
 📜 *Total Commands:* \`{totalCommands}\`
 ⚙️ *Event Listeners:* \`{listeners}\`
 
-╰━━━━━━━━━━━━━━━╯
+╰━━━━━━━━━━━━━━━━╯
   `;
 
     ctx.reply(text, { parse_mode: "Markdown" });
