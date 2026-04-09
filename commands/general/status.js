@@ -10,7 +10,7 @@ module.exports = {
 
 🖥️ *CPU Load:* \`{cpuLoad}\`
 💾 *RAM:* \`{usedRAM}MB / {totalRAM}MB\`
-📦 *Storage:* \`{storage}\`
+📦 *Storage:* \`{st.used} / ${1024 * 4} GB\`
 
 🗄️ *Database:* Connected 🟢
 
