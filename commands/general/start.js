@@ -13,7 +13,7 @@ module.exports = {
     }
     if(!args || args.length < 1){
       ctx.reply("👋 Welcome!");
-      await db.set(`users.${ctx.from.id}`{
+      await db.set(`users.${ctx.from.id}`, {
           $: 100,
           joined_at: Date.now(),
           ref_by: null,
