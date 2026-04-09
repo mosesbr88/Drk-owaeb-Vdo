@@ -1,10 +1,11 @@
 module.exports = {
   name: "status",
   execute(ctx) {
+    let uptime = serverStartTime - Date.now();
       const text = `
 ╭━━━〔 🚀 BOT STATUS 〕━━━╮
 
-⏱️ *Uptime:* \`{uptime}\`
+⏱️ *Uptime:* \`${uptime}\`
 📶 *Ping:* \`{ping} ms\`
 
 🖥️ *CPU Load:* \`{cpuLoad}\`
