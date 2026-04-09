@@ -3,8 +3,8 @@ const { Bot } = require("grammy");
 global.db = require("./DB/final.mongodb.js");
 const execState = new Map();
 
-let RFCode = {};
-global.RFCode = RFCode;
+let VfCode = {};
+global.RFCode = VfCode;
 
 const { token } = require("./config");
 
@@ -93,7 +93,6 @@ async function runCode(code) {
 }
 
 // start eval mode
-console.log("star eval");
 bot.hears(".eval", (ctx) => {
   console.log("84949499383848489494848");
  // if (!isOwner(ctx)) return ctx.reply("❌ Not allowed");
