@@ -3,8 +3,20 @@ module.exports = {
   description: "Start bot",
 
   async execute(ctx, args, bot) {
+    if(await db.get(`users[${ctx.from.id}]`)){
+      ctx.reply("💐 Welcome Back!");
+      let deta = await db.get(`users[${ctx.from.id}]`);
+      ctx.reply(JSON.stringify(deta));
+    }
     if(!args || args.length < 1){
       ctx.reply("👋 Welcome!");
+      await db.set(`users[${ctx.from.id}]`{
+          $: 100,
+          joined_at: Date.now(),
+          ref_by: null,
+          ref_code: null,
+          total_ref: 0
+      });
     } else {
       if(!RFCode[args[0]]){
         return ctx.reply(`❌| Invalid or expired Referral Code Provided..`);
@@ -15,7 +27,13 @@ module.exports = {
       }
       const RFUser = await bot.api.getChat(RFCode[args[0]].createdBy);
       if(!RFUser){ return ctx.reply("⚠️ | Referal creator is not a valid user"); }
-      
+      await db.set(`users[${ctx.from.id}]`{
+          $: 100,
+          joined_at: Date.now(),
+          ref_by: args[0],
+          ref_code: null,
+          total_ref: 0
+      });
       ctx.reply(`👋 Welcome!, Referred By: @${RFUser.username}`);
     };
   }
