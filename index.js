@@ -56,42 +56,7 @@ require("./handlers/slashHandler")(bot);
   }
 }*/
 
-async function runCode(code) {
-  let logs = [];
 
-  const fakeConsole = {
-    log: (...args) => {
-      logs.push(args.map(a => String(a)).join(" "));
-    }
-  };
-
-  try {
-    const fn = new Function("console", `
-      return (async () => {
-        try {
-          ${code}
-        } catch (e) {
-          throw e;
-        }
-      })();
-    `);
-
-    const result = await fn(fakeConsole);
-
-    // 🟢 small delay so pending logs (microtasks/macrotasks) complete
-    await new Promise(res => setTimeout(res, 0));
-
-    return {
-      output: logs.join("\n") || "✅ Executed",
-      result
-    };
-
-  } catch (err) {
-    return {
-      error: err.stack || err.message
-    };
-  }
-}
 
 // start eval mode
 /*bot.hears(".eval", (ctx) => {
@@ -110,7 +75,7 @@ console.log("048494958594");
 });
 
 // main handler
-bot.on("message:text", async (ctx) => {
+/*bot.on("message:text", async (ctx) => {
   //if (!isOwner(ctx)) return;
 
   if (!execState.get(ctx.from.id)) return;
@@ -141,7 +106,7 @@ bot.on("message:text", async (ctx) => {
   return ctx.reply(reply, {
     parse_mode: "Markdown"
   });
-});
+});*/
 
 console.log("🚀 Bot running...");
 bot.start({
