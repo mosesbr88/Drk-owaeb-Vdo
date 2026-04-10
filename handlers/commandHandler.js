@@ -57,6 +57,7 @@ module.exports = (bot) => {
         `⏳ Please wait ${remaining}s before using this command again.`
       );
   }
+  }
 
     const parts = text.split(" ");
     const name = parts[0].slice(1).split("@")[0];
