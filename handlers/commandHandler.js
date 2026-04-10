@@ -41,7 +41,7 @@ module.exports = (bot) => {
       return await next();
     };
     
-  const cooldown = 2000; // 2 sec
+  const cooldown = 3000; // threw sec
 
   const last = ctx.session.lastCmd || 0;
   const diff = Date.now() - last;
@@ -54,7 +54,7 @@ module.exports = (bot) => {
       ctx.session.warned = true;
 
       return ctx.reply(
-        `⏳ Please wait ${remaining}s before using this command again.`
+        `⏳ Please wait ${remaining}s before using any command again.`
       );
   }
   }
