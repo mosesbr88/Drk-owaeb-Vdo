@@ -58,6 +58,8 @@ module.exports = (bot) => {
       );
   }
   }
+    ctx.session.warned = false;
+    ctx.session.lastCmd = Date.now();
 
     const parts = text.split(" ");
     const name = parts[0].slice(1).split("@")[0];
