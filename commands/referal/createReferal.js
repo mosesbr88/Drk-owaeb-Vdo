@@ -13,7 +13,7 @@ module.exports = {
   async execute(ctx, args, bot) {
     let code = randomString(); 
     RFCode[`${code}`] = {
-      ttl: (Date.now() + (1000 * 60 )),
+      ttl: (Date.now() + (((1000 * 60 ) * 60) * 24)),
       createdBy: ctx.from.id
     };
     ctx.reply(`Code created: ${code}, Created By: @${ctx.from.username} \n\nLink: https://t.me/${bot.userName}?start=${code}`);
