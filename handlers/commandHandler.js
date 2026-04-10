@@ -40,6 +40,23 @@ module.exports = (bot) => {
     if (!text.startsWith("/")) {
       return await next();
     };
+    
+  const cooldown = 2000; // 2 sec
+
+  const last = ctx.session.lastCmd || 0;
+  const diff = Date.now() - last;
+
+  if (diff < cooldown) {
+    const remaining = ((cooldown - diff) / 1000).toFixed(1);
+
+    // agar abhi tak warn nahi kiya
+    if (!ctx.session.warned) {
+      ctx.session.warned = true;
+
+      return ctx.reply(
+        `⏳ Please wait ${remaining}s before using this command again.`
+      );
+  }
 
     const parts = text.split(" ");
     const name = parts[0].slice(1).split("@")[0];
