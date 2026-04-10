@@ -17,7 +17,6 @@ module.exports = {
       await db.set(`users.${ctx.from.id}`, {
           $: 100,
           joined_at: Date.now(),
-          ref_by: null,
           ref_code: null,
           total_ref: 0
       });
@@ -41,6 +40,8 @@ module.exports = {
       });
       ctx.reply(`👋 Welcome!, Referred By: @${RFUser.username}`);
       tgLogger.log(`New user joined: ${ctx.from.id}, Reffered By: @${RFUser.username} / ${args[0]}`);
+      await bot.api.sendMessage(RFCode[args[0]].createdBy, `User @${ctx.from.id} joined using your referral Code. Now you have {referal_count} referral`);
+      await db.add(`users.${RFCode[args[0]].createdBy}.total_ref`, 1);
     };
   }
 };
