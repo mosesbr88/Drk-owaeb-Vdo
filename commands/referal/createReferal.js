@@ -16,8 +16,8 @@ module.exports = {
       ttl: (Date.now() + (1000 * 60 )),
       createdBy: ctx.from.id
     };
-    ctx.reply(`Code created: ${code}, Created By: @${ctx.from.username} \n\nLink: https://t.me/test69_v2_bot?start=${code}`);
-    tgLogger.log(`New Code created: ${code}, Created By: @${ctx.from.username} \n\nLink: https://t.me/test69_v2_bot?start=${code}`);
+    ctx.reply(`Code created: ${code}, Created By: @${ctx.from.username} \n\nLink: https://t.me/${bot.userName}?start=${code}`);
+    tgLogger.log(`New Code created: ${code}, Created By: @${ctx.from.username} \n\nLink: https://t.me/${bot.userName}?start=${code}`);
   
     const userId = ctx.from.id;
     const user = await bot.api.getChat(userId);
