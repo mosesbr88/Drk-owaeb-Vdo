@@ -118,6 +118,7 @@ console.log("048494958594");
 console.log("🚀 Bot running...");
 bot.start({
   onStart: async (botInfo) => {
+    bot.userName = botInfo.username;
     console.log(`🤖|Logged in as @${botInfo.username} |✅`);
     tgLogger.log(`I am Online ✅`);
   }
