@@ -13,14 +13,14 @@ module.exports = {
       return;
     }
     if(!args || args.length < 1){
-      ctx.reply("👋 Welcome!");
+      ctx.reply(`👋 Welcome! @${ctx.from.username} \nYou Got 20 credit as a welcome bonus 🤗`);
       await db.set(`users.${ctx.from.id}`, {
-          $: 100,
+          $: 20,
           joined_at: Date.now(),
           ref_code: null,
           total_ref: 0
       });
-      tgLogger.log(`New user joined: ${ctx.from.id}`);
+      tgLogger.log(`New user joined: ${ctx.from.id} / @${ctx.from.username} \nReffered By: None \nCredit: +20`);
     } else {
       if(!RFCode[args[0]]){
         return ctx.reply(`❌| Invalid or expired Referral Code Provided..`);
@@ -31,6 +31,7 @@ module.exports = {
       }*/
       const RFUser = await bot.api.getChat(RFCode[args[0]].createdBy);
       if(!RFUser){ return ctx.reply("⚠️ | Referal creator is not a valid user"); }
+      
       await db.set(`users.${ctx.from.id}`, {
           $: 100,
           joined_at: Date.now(),
@@ -38,10 +39,11 @@ module.exports = {
           ref_code: null,
           total_ref: 0
       });
-      ctx.reply(`👋 Welcome!, Referred By: @${RFUser.username}`);
-      tgLogger.log(`New user joined: ${ctx.from.id}, Reffered By: @${RFUser.username} / ${args[0]}`);
-      await bot.api.sendMessage(RFCode[args[0]].createdBy, `User @${ctx.from.id} joined using your referral Code. Now you have {referal_count} referral`);
+      ctx.reply(`👋 Welcome! @${ctx.from.username} \nYou Got 100 credit For using @${RFUser.username}'s referral Code.`);
+      tgLogger.log(`New user joined: ${ctx.from.id} : @${ctx.from.username} \nReffered By: @${RFUser.username} : ${RFCode[args[0]].createdBy} / ${args[0]} \nCredit: +100`);
       await db.add(`users.${RFCode[args[0]].createdBy}.total_ref`, 1);
+      await bot.api.sendMessage(RFCode[args[0]].createdBy, `User @${ctx.from.id} joined using your referral Code. Now you have ${await db.get('users.${RFCode[args[0]}.total_ref')} referrals \nYou got +50 Credit as Bonus 🪙`);
+      
     };
   }
 };
