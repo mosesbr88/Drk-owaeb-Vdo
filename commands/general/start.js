@@ -4,7 +4,7 @@ module.exports = {
 
   async execute(ctx, args, bot) {
     if(await db.get(`users.${ctx.from.id}`)){
-      if(args || args.length > 0){
+      if(args && args.length > 0){
         return ctx.reply("❌ | You are already registered, so you can't use a referral code.");
       }
       ctx.reply("💐 Welcome Back!");
