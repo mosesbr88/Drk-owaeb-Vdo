@@ -4,6 +4,9 @@ module.exports = {
 
   async execute(ctx, args, bot) {
     if(await db.get(`users.${ctx.from.id}`)){
+      if(args || args[0]){
+        return ctx.reply("❌ | You are already registered, so you can't use a referral code.");
+      }
       ctx.reply("💐 Welcome Back!");
       let deta = await db.get(`users.${ctx.from.id}`);
       // ctx.reply(JSON.stringify(deta));
@@ -20,7 +23,7 @@ module.exports = {
           ref_code: null,
           total_ref: 0
       });
-      tgLogger.log(`New user joined: ${ctx.from.id} / @${ctx.from.username} \nReffered By: None \nCredit: +20`);
+      tgLogger.log(`🤝 | New user joined: ${ctx.from.id} / @${ctx.from.username} \nReffered By: None \nCredit: +20`);
     } else {
       if(!RFCode[args[0]]){
         return ctx.reply(`❌| Invalid or expired Referral Code Provided..`);
@@ -41,7 +44,9 @@ module.exports = {
       });
       let refUserId = RFCode[args[0]].createdBy;
       
-      ctx.reply(`👋 Welcome! @${ctx.from.username} \nYou Got 100 credit For using @${RFUser.username}'s referral Code.`);
+      ctx.reply(`👋 Welcome, ${ctx.from.username ? `@${ctx.from.username}` : ctx.from.first_name} !
+🎁 You received 100 credits for using ${refUserId}'s referral code.`);
+                              
       tgLogger.log(`New user joined: ${ctx.from.id} : @${ctx.from.username} \nReffered By: @${RFUser.username} : ${RFCode[args[0]].createdBy} / ${args[0]} \nCredit: +100`);
       await db.add(`users.${RFCode[args[0]].createdBy}.total_ref`, 1);
       let totalRef = await db.get(`users.${refUserId}.total_ref`);
@@ -49,8 +54,8 @@ module.exports = {
       
       //await bot.api.sendMessage(RFCode[args[0]].createdBy, `User @${ctx.from.id} joined using your referral Code. Now you have ${await db.get('users.${RFCode[args[0]}.total_ref')} referrals \nYou got +50 Credit as Bonus 🪙`);
       await bot.api.sendMessage(refUserId, `🎉 ${userName} joined using your referral code!
-      👥 Total referrals: ${totalRef}
-      🪙 You received +50 credits as a bonus!`);
+👥 Total referrals: ${totalRef}
+🪙 You received +50 credits as a bonus!`);
       await db.add(`users.${RFCode[args[0]].createdBy}.$`, 50);
    
     };
