@@ -74,7 +74,9 @@ module.exports = {
         `https://t.me/share/url?url=${encodeURIComponent(
           referralLink
         )}&text=${encodeURIComponent(
-          "🎉 Join & earn free credits now!"
+          `🎁 Join this bot & watch V¡deos 🌚;
+
+» ${atob("Qw==")}¡${atob("UA==")}¡ • ԁ${atob("cg==")}κ ${atob("dw==")}€${atob("Yg==")} • ${atob("YzByTg==")}`
         )}`
       )
       .text("📋 Copy", "copy_ref");
