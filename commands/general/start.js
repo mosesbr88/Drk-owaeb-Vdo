@@ -1,4 +1,6 @@
+const { InlineKeyboard } = require("grammy");
 const generateRandomToken = require("../../modules/generateRandomToken.js");
+
 function getJoinDate() {
   return new Intl.DateTimeFormat("en-IN", {
     timeZone: "Asia/Kolkata",
@@ -12,129 +14,171 @@ function getJoinDate() {
   }).format(new Date());
 }
 
-function newUserTemplateHTML({
-  username = "N/A",
-  id,
-  referrerId = "None",
-  refCode = "N/A",
-  refCount = 0,
-  userRefCode = "N/A",
-  joinDate,
-  bonus = 0
-}) {
-  return `
-<b>🧤 NEW USER JOINED</b>
+function buildWelcomeMessage(user, bonus, refText, refCode, botUsername) {
+  const link = `https://t.me/${botUsername}?start=${refCode}`;
 
-<pre>
-👤 Username   : ${username}
-🆔 ID         : ${id}
+  return {
+    text: `
+<b>✨ Welcome ${user}!</b>
 
-🤝 Referred By: ${referrerId}
-   ↳ Code     : ${refCode} (${refCount})
+🎁 <b>Bonus Received:</b> +${bonus} credits  
 
-🔑 Ref Code   : ${userRefCode}
-📅 Joined At  : ${joinDate}
+${refText}
 
-🪙 Bonus      : +${bonus}
-</pre>
-`;
+<blockquote>
+🔗 <b>Your Referral Link</b>
+${link}
+
+🎟️ <b>Your Code:</b> <code>${refCode}</code>
+</blockquote>
+
+💡 <i>Invite friends & earn more rewards!</i>
+❓ Use /help to explore all commands
+`,
+    link,
+  };
 }
-
-// usage
-/*ctx.reply(
-  newUserTemplateHTML({
-    username: ctx.from.username ? "@" + ctx.from.username : "N/A",
-    id: ctx.from.id,
-    referrerId: referrer?.id || "None",
-    refCode: referrer?.code || "N/A",
-    refCount: referrer?.count || 0,
-    userRefCode: user.code,
-    joinDate: new Date().toLocaleDateString(),
-    bonus: 100
-  }),
-  { parse_mode: "HTML" }
-);*/
 
 module.exports = {
   name: "start",
   description: "Start bot",
 
   async execute(ctx, args, bot) {
-    if(await db.get(`users.${ctx.from.id}`)){
-      if(args.length > 0){
-        return ctx.reply("❌ | You are already registered, so you can't use a referral code.");
+    const userId = ctx.from.id;
+    const username = ctx.from.username
+      ? `@${ctx.from.username}`
+      : ctx.from.first_name;
+
+    // Already registered
+    if (await db.get(`users.${userId}`)) {
+      if (args.length > 0) {
+        return ctx.reply("❌ You are already registered. Referral not allowed.");
       }
-      ctx.reply("💐 Welcome Back!");
-      let deta = await db.get(`users.${ctx.from.id}`);
-      ctx.reply(`<pre>${JSON.stringify(deta, null, 2)}</pre>`, {
-  parse_mode: "HTML"
-});
-      return;
+
+      const data = await db.get(`users.${userId}`);
+      return ctx.reply(
+        `<b>💐 Welcome Back!</b>\n\n<pre>${JSON.stringify(data, null, 2)}</pre>`,
+        { parse_mode: "HTML" }
+      );
     }
-    if(args.length < 1){
-      let newRefCode = generateRandomToken();
-      ctx.reply(`👋 Welcome! @${ctx.from.username} \nYou Got 20 credit as a welcome bonus 🤗 \nYour referal code: ${newRefCode} // https://t.me/${bot.userName}?start=${newRefCode}`);
-      await db.set(`users.${ctx.from.id}`, {
-          $: 20,
-          joined_at: Date.now(),
-          ref_code: newRefCode,
-          total_ref: 0
+
+    // Create new ref code
+    const newRefCode = generateRandomToken();
+    const botUsername = bot.userName;
+    const referralLink = `https://t.me/${botUsername}?start=${newRefCode}`;
+
+    // Keyboard
+    const keyboard = new InlineKeyboard()
+      .url(
+        "🔗 Share",
+        `https://t.me/share/url?url=${encodeURIComponent(
+          referralLink
+        )}&text=${encodeURIComponent(
+          "🎉 Join & earn free credits now!"
+        )}`
+      )
+      .text("📋 Copy", "copy_ref");
+
+    // FULL COPY TEXT
+    const fullText = `🎁 Join this bot & earn rewards!
+
+🔗 Link: ${referralLink}
+🎟️ Code: ${newRefCode}`;
+
+    // No referral
+    if (args.length < 1) {
+      await db.set(`users.${userId}`, {
+        $: 20,
+        joined_at: Date.now(),
+        ref_code: newRefCode,
+        total_ref: 0,
       });
-      await db.set(`refCodes.${newRefCode}.cId`, ctx.from.id);
-      
-      tgLogger.log(`🤝 | New user joined: ${ctx.from.id} / @${ctx.from.username} \nReffered By: None \nCredit: +20`);
-    } else {
-      if(!RFCode[args[0]]){
-        return ctx.reply(`❌| Invalid or expired Referral Code Provided..`);
-      }else if(!RFCode[args[0]].ttl || isNaN(RFCode[args[0]].ttl) || RFCode[args[0]].ttl < Date.now()){
-        return ctx.reply("⌛| Your Referal Code is expired. please create new one");
-      } /*else if(RFCode[args[0]].createdBy === ctx.from.id){
-        return ctx.reply("👾 | You cannot use your own Referral Code. Sent it to your friends!");
-      }*/
-      const RFUser = await bot.api.getChat(RFCode[args[0]].createdBy);
-      if(!RFUser){ return ctx.reply("⚠️ | Referal creator is not a valid user"); }
-      let newRefCode = generateRandomToken();
-      
-      await db.set(`users.${ctx.from.id}`, {
-          $: 100,
-          joined_at: Date.now(),
-          ref_by: args[0],
-          ref_code: newRefCode,
-          total_ref: 0
+
+      await db.set(`refCodes.${newRefCode}.cId`, userId);
+
+      const msg = buildWelcomeMessage(
+        username,
+        20,
+        "🚀 <b>Welcome bonus unlocked!</b>",
+        newRefCode,
+        botUsername
+      );
+
+      await ctx.reply(msg.text, {
+        parse_mode: "HTML",
+        reply_markup: keyboard,
       });
-      await db.set(`refCodes.${newRefCode}.cId`, ctx.from.id);
-      
-      let refUserId = RFCode[args[0]].createdBy;
-      
-      ctx.reply(`👋 Welcome, ${ctx.from.username ? `@${ctx.from.username}` : ctx.from.first_name} !
-🎁 You received 100 credits for using ${RFUser.username ? "@" + RFUser.username : RFUser.first_name}'s referral code. \nYour Referral Code: ${newRefCode} // https://t.me/${bot.userName}?start=${newRefCode}`);
-                              
-      tgLogger.log(`New user joined: ${ctx.from.id} : @${ctx.from.username} \nReffered By: @${RFUser.username} : ${RFCode[args[0]].createdBy} / ${args[0]} \nCredit: +100`);
-     //+"(
-      tgLogger.log(
-  newUserTemplateHTML({
-    username: ctx.from.username ? "@" + ctx.from.username : ctx.from.first_name,
-    id: ctx.from.id ,
-    referrerId: RFCode[args[0]].createdBy,
-    refCode: args[0],
-    refCount: 0,
-    userRefCode: newRefCode,
-    joinDate: getJoinDate(),
-    bonus: 100
-  }),
-  { parse_mode: "HTML" }
-);
-      
-      await db.add(`users.${RFCode[args[0]].createdBy}.total_ref`, 1);
-      let totalRef = await db.get(`users.${refUserId}.total_ref`);
-      let userName = ctx.from.username ? `@${ctx.from.username}` : ctx.from.first_name;
-      
-      //await bot.api.sendMessage(RFCode[args[0]].createdBy, `User @${ctx.from.id} joined using your referral Code. Now you have ${await db.get('users.${RFCode[args[0]}.total_ref')} referrals \nYou got +50 Credit as Bonus 🪙`);
-      await bot.api.sendMessage(refUserId, `🎉 ${userName} joined using your referral code!
-👥 Total referrals: ${totalRef}
-🪙 You received +50 credits as a bonus!`);
-      await db.add(`users.${RFCode[args[0]].createdBy}.$`, 50);
-   
-    };
-  }
+
+      tgLogger.log(`🤝 New user: ${userId} (${username}) | +20`);
+    }
+
+    // With referral
+    else {
+      if (!RFCode[args[0]]) {
+        return ctx.reply("❌ Invalid or expired referral code.");
+      }
+
+      const refUserId = RFCode[args[0]].createdBy;
+      const RFUser = await bot.api.getChat(refUserId);
+
+      if (!RFUser) {
+        return ctx.reply("⚠️ Invalid referrer.");
+      }
+
+      await db.set(`users.${userId}`, {
+        $: 100,
+        joined_at: Date.now(),
+        ref_by: args[0],
+        ref_code: newRefCode,
+        total_ref: 0,
+      });
+
+      await db.set(`refCodes.${newRefCode}.cId`, userId);
+
+      await db.add(`users.${refUserId}.total_ref`, 1);
+      await db.add(`users.${refUserId}.$`, 50);
+
+      const refName = RFUser.username
+        ? `@${RFUser.username}`
+        : RFUser.first_name;
+
+      const msg = buildWelcomeMessage(
+        username,
+        100,
+        `🎉 You joined using <b>${refName}</b>'s referral!`,
+        newRefCode,
+        botUsername
+      );
+
+      await ctx.reply(msg.text, {
+        parse_mode: "HTML",
+        reply_markup: keyboard,
+      });
+
+      await bot.api.sendMessage(
+        refUserId,
+        `🎉 <b>New Referral Joined!</b>
+
+👤 ${username}
+🪙 +50 credits added  
+👥 Total referrals updated!`,
+        { parse_mode: "HTML" }
+      );
+
+      tgLogger.log(`🤝 ${username} joined via ${refName} | +100`);
+    }
+
+    // COPY BUTTON HANDLER (TOAST)
+    bot.callbackQuery("copy_ref", async (ctx) => {
+      await ctx.answerCallbackQuery({
+        text: "✅ Invite text ready to copy!",
+        show_alert: false, // 👈 toast instead of popup
+      });
+
+      await ctx.reply(
+        `<b>📋 Copy Your Invite:</b>\n\n<pre>${fullText}</pre>`,
+        { parse_mode: "HTML" }
+      );
+    });
+  },
 };
