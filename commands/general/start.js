@@ -167,18 +167,5 @@ module.exports = {
 
       tgLogger.log(`🤝 ${username} joined via ${refName} | +100`);
     }
-
-    // COPY BUTTON HANDLER (TOAST)
-    bot.callbackQuery("copy_ref", async (ctx) => {
-      await ctx.answerCallbackQuery({
-        text: "✅ Invite text ready to copy!",
-        show_alert: false, // 👈 toast instead of popup
-      });
-
-      await ctx.reply(
-        `<b>📋 Copy Your Invite:</b>\n\n<pre>${fullText}</pre>`,
-        { parse_mode: "HTML" }
-      );
-    });
   },
 };
