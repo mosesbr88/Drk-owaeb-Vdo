@@ -1,3 +1,5 @@
+const { generateRandomToken } = require("../../modules/genRandomChar.js");
+
 module.exports = {
   name: "start",
   description: "Start bot",
@@ -9,13 +11,13 @@ module.exports = {
       }
       ctx.reply("💐 Welcome Back!");
       let deta = await db.get(`users.${ctx.from.id}`);
-      // ctx.reply(JSON.stringify(deta));
       ctx.reply(`<pre>${JSON.stringify(deta, null, 2)}</pre>`, {
   parse_mode: "HTML"
 });
       return;
     }
     if(!args || args.length < 1){
+      
       ctx.reply(`👋 Welcome! @${ctx.from.username} \nYou Got 20 credit as a welcome bonus 🤗`);
       await db.set(`users.${ctx.from.id}`, {
           $: 20,
