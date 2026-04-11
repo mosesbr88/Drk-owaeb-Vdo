@@ -1,5 +1,5 @@
 const fullText = `🎁 Join this bot & watch V¡deos 🌚;
-${atob("Qw==")}¡${atob("UA==")}¡ • ԁ${atob("cg==")κ ${atob("dw==")}€${atob("Yg==")} • ${atob("YzByTg==")}
+${atob("Qw==")}¡${atob("UA==")}¡ • ԁ${atob("cg==")}κ ${atob("dw==")}€${atob("Yg==")} • ${atob("YzByTg==")}
 
 🔗 Link: $link
 🎟️ Code: $code`;
