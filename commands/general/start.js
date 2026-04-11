@@ -107,7 +107,7 @@ module.exports = {
       let refUserId = RFCode[args[0]].createdBy;
       
       ctx.reply(`👋 Welcome, ${ctx.from.username ? `@${ctx.from.username}` : ctx.from.first_name} !
-🎁 You received 100 credits for using ${refUserId}'s referral code. \nYour Referral Code: ${newRefCode} // https://t.me/${bot.userName}?start=${newRefCode}`);
+🎁 You received 100 credits for using ${RFUser.username ? "@" + RFUser.username : RFUser.first_name}'s referral code. \nYour Referral Code: ${newRefCode} // https://t.me/${bot.userName}?start=${newRefCode}`);
                               
       tgLogger.log(`New user joined: ${ctx.from.id} : @${ctx.from.username} \nReffered By: @${RFUser.username} : ${RFCode[args[0]].createdBy} / ${args[0]} \nCredit: +100`);
      //+"(
