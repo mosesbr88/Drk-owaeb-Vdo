@@ -17,6 +17,6 @@ module.exports = (bot) => {
     const btn = bot.buttons.get(ctx.callbackQuery.data);
     if (!btn) return;
 
-    await btn.execute(ctx, bot);
+    await btn.execute(bot, ctx);
   });
 };
