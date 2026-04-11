@@ -102,10 +102,10 @@ module.exports = {
   newUserTemplateHTML({
     username: ctx.from.username ? "@" + ctx.from.username : "N/A",
     id: ctx.from.id || 00,
-    referrerId: referrer?.id || "None",
-    refCode: referrer?.code || "N/A",
-    refCount: referrer?.count || 0,
-    userRefCode: user.code,
+    referrerId: "None",
+    refCode: "N/A",
+    refCount: 0,
+    userRefCode: null,
     joinDate: new Date().toLocaleDateString(),
     bonus: 100
   }),
