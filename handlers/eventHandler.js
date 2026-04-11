@@ -11,7 +11,7 @@ module.exports = (bot) => {
 bot.EventListenerCount += 1;
     bot.on(event.event, (ctx, next) => {
       if (!ctx.from || ctx.from.is_bot) return next();
-      event.execute(ctx, bot);
+      event.execute(bot, ctx);
       next();
     });
   }
