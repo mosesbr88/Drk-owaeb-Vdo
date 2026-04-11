@@ -25,7 +25,7 @@ module.exports = {
           ref_code: newRefCode,
           total_ref: 0
       });
-      await db.set(`refCodes.${newRefCode}.creatorId`, ctx.from.id);
+      await db.set(`refCodes.${newRefCode}.cId`, ctx.from.id);
       
       tgLogger.log(`🤝 | New user joined: ${ctx.from.id} / @${ctx.from.username} \nReffered By: None \nCredit: +20`);
     } else {
@@ -47,7 +47,7 @@ module.exports = {
           ref_code: newRefCode,
           total_ref: 0
       });
-      await db.set(`refCodes.${newRefCode}.creatorId`, ctx.from.id);
+      await db.set(`refCodes.${newRefCode}.cId`, ctx.from.id);
       
       let refUserId = RFCode[args[0]].createdBy;
       
