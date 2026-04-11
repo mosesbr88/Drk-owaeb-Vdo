@@ -3,7 +3,7 @@ ${atob("Qw==")}¡${atob("UA==")}¡ • ԁ${atob("cg==")κ ${atob("dw==")}€${at
 
 🔗 Link: $link
 🎟️ Code: $code`;
-r w€b
+
 module.exports = {
   name: "copy_ref",
 
