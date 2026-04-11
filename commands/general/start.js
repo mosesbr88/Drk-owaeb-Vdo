@@ -6,7 +6,7 @@ module.exports = {
 
   async execute(ctx, args, bot) {
     if(await db.get(`users.${ctx.from.id}`)){
-      if(args && args.length > 0){
+      if(args.length > 0){
         return ctx.reply("❌ | You are already registered, so you can't use a referral code.");
       }
       ctx.reply("💐 Welcome Back!");
@@ -16,7 +16,7 @@ module.exports = {
 });
       return;
     }
-    if(!args && args.length < 1){
+    if(args.length < 1){
       let newRefCode = generateRandomToken();
       ctx.reply(`👋 Welcome! @${ctx.from.username} \nYou Got 20 credit as a welcome bonus 🤗 \nYour referal code: newRefCode // `);
       await db.set(`users.${ctx.from.id}`, {
