@@ -25,9 +25,10 @@ module.exports = (bot) => {
 
       bot.commands.set(cmd.name, cmd);
       console.log(`✅ | /${cmd.name}`);
+      /* //depreciated 
       if (cmd.aliases) {
         cmd.aliases.forEach(a => bot.commands.set(a, cmd));
-      }
+      }*/
     }
   };
 
