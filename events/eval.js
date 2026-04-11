@@ -38,7 +38,7 @@ async function runCode(code) {
 module.exports = {
   event: "message:text",
 
-  async execute(ctx) {
+  async execute(bot, ctx) {
     
   if (!execState.get(ctx.from.id)) return;
 
