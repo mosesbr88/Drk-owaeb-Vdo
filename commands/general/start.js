@@ -1,4 +1,17 @@
 const generateRandomToken = require("../../modules/generateRandomToken.js");
+function getJoinDate() {
+  return new Intl.DateTimeFormat("en-IN", {
+    timeZone: "Asia/Kolkata",
+    day: "2-digit",
+    month: "short",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    second: "2-digit",
+    hour12: true
+  }).format(new Date());
+}
+
 function newUserTemplateHTML({
   username = "N/A",
   id,
@@ -100,13 +113,13 @@ module.exports = {
      //+"(
       tgLogger.log(
   newUserTemplateHTML({
-    username: ctx.from.username ? "@" + ctx.from.username : "N/A",
-    id: ctx.from.id || 00,
-    referrerId: "None",
-    refCode: "N/A",
+    username: ctx.from.username ? "@" + ctx.from.username : ctx.from.first_name,
+    id: ctx.from.id ,
+    referrerId: RFCode[args[0]].createdBy,
+    refCode: args[0],
     refCount: 0,
-    userRefCode: null,
-    joinDate: new Date().toLocaleDateString(),
+    userRefCode: newRefCode,
+    joinDate: getJoinDate(),
     bonus: 100
   }),
   { parse_mode: "HTML" }
