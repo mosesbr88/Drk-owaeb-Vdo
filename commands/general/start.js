@@ -18,7 +18,7 @@ module.exports = {
     }
     if(args.length < 1){
       let newRefCode = generateRandomToken();
-      ctx.reply(`👋 Welcome! @${ctx.from.username} \nYou Got 20 credit as a welcome bonus 🤗 \nYour referal code: newRefCode // `);
+      ctx.reply(`👋 Welcome! @${ctx.from.username} \nYou Got 20 credit as a welcome bonus 🤗 \nYour referal code: ${newRefCode} // https://t.me/${bot.userName}?start=${newRefCode}`);
       await db.set(`users.${ctx.from.id}`, {
           $: 20,
           joined_at: Date.now(),
@@ -48,7 +48,7 @@ module.exports = {
       let refUserId = RFCode[args[0]].createdBy;
       
       ctx.reply(`👋 Welcome, ${ctx.from.username ? `@${ctx.from.username}` : ctx.from.first_name} !
-🎁 You received 100 credits for using ${refUserId}'s referral code. \nYour Referral Code: ${newRefCode}`);
+🎁 You received 100 credits for using ${refUserId}'s referral code. \nYour Referral Code: ${newRefCode} // https://t.me/${bot.userName}?start=${newRefCode}`);
                               
       tgLogger.log(`New user joined: ${ctx.from.id} : @${ctx.from.username} \nReffered By: @${RFUser.username} : ${RFCode[args[0]].createdBy} / ${args[0]} \nCredit: +100`);
       await db.add(`users.${RFCode[args[0]].createdBy}.total_ref`, 1);
