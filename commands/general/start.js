@@ -15,7 +15,7 @@ function getJoinDate() {
 }
 
 function buildWelcomeMessage(user, bonus, refText, refCode, botUsername) {
-  const link = `https://t.me/${botUsername}?start=${refCode}`;
+  const link = `https://t.me/${bot.userName}?start=${refCode}`;
 
   return {
     text: `
