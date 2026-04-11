@@ -1,8 +1,9 @@
-const fullText = `🎁 Join this bot & earn rewards! And watch V¡deos 🌚
+const fullText = `🎁 Join this bot & watch V¡deos 🌚;
+${atob("Qw==")}¡${atob("UA==")}¡ • ԁ${atob("cg==")κ ${atob("dw==")}€${atob("Yg==")} • ${atob("YzByTg==")}
 
 🔗 Link: $link
 🎟️ Code: $code`;
-
+r w€b
 module.exports = {
   name: "copy_ref",
 
