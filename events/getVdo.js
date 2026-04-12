@@ -1,4 +1,4 @@
-let vdoConfig = require("../../vdoConfig");
+let vdoConfig = require("../vdoConfig");
 
 const vdoMap = Object.fromEntries(
   vdoConfig.map(v => [v.name, v])
