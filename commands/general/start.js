@@ -43,7 +43,7 @@ module.exports = {
   name: "start",
   description: "Start bot",
 
-  async execute(ctx, args, bot) {
+  async execute(bot, ctx, args) {
     const userId = ctx.from.id;
     const username = ctx.from.username
       ? `@${ctx.from.username}`
