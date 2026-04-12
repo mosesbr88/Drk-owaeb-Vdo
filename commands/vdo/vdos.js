@@ -6,10 +6,11 @@ module.exports = {
   description: "Get Videos from the bot",
   execute(bot, ctx) {
 
-    const keyboard = new Keyboard().resized();
+    const keyboard = new Keyboard().resized()..placeholder("Choose A Category...");
 
       for(let i=0; i<vdoConfig.length; i++){
         keyboard.text(vdoConfig[i].name);
+        if(vdoConfig[i].row) keyboard.row();
       };
           
     /*  .text("🎬 Video 1")
