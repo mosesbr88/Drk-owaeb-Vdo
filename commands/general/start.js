@@ -120,7 +120,7 @@ module.exports = {
         return ctx.reply("❌ Invalid referral code Provided.");
       }
 
-      const refUserId = await db.get(`refCodes.${newRefCode}.cId`);
+      const refUserId = await db.get(`refCodes.${args[0]}.cId`);
       const RFUser = await bot.api.getChat(refUserId);
 
       if (!RFUser) {
