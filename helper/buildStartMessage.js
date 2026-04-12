@@ -26,7 +26,7 @@ ${link}
 function buildStartMessage(arg){
   let user = arg.user || null
     , credit = arg.credit || 0
-    , totalRefferals = arg.totalRefferals || "-1"
+    , totalRefferals = arg.totalRefferals || 0
     , refCode = arg.refCode || "/\\"
     , botUsername = arg.botUsername || null;
   const link = `https://t.me/${botUsername}?start=${refCode}`;
