@@ -25,19 +25,20 @@ module.exports = {
     const username = ctx.from.username
       ? `@${ctx.from.username}`
       : ctx.from.first_name;
-
+// ✅
+    
     // Already registered
-    if (await db.get(`users.${userId}`)) {
+    const deta = await db.get(`users.${userId}`);
+    if (deta) {
       if (args.length > 0) {
-        return ctx.reply("❌ You are already registered. Referral not allowed.");
-      }
+        return ctx.reply("❌ You are already registered. Referral not allowed. Try /start instead.");
+      } // ✅
 
-      const data = await db.get(`users.${userId}`);
       return ctx.reply(
-        `<b>💐 Welcome Back!</b>\n\n<pre>${JSON.stringify(data, null, 2)}</pre>`,
+        `<b>💐 Welcome Back!</b>\n\n<pre>${JSON.stringify(deta, null, 2)}</pre>`,
         { parse_mode: "HTML" }
       );
-    }
+    } // ✅
 
     // Create new ref code
     const newRefCode = generateRandomToken();
@@ -87,17 +88,17 @@ module.exports = {
         parse_mode: "HTML",
         reply_markup: keyboard,
       });
-
+// ✅
       tgLogger.log(`🤝 New user: ${userId} (${username}) | +20`);
     }
 
     // With referral
     else {
-      if (!(await db.get(`refCodes.${args[0]}.cId`))) {
-        return ctx.reply("❌ Invalid referral code Provided.");
-      }
-
       const refUserId = await db.get(`refCodes.${args[0]}.cId`);
+      if (!refUserId) {
+        return ctx.reply("❌ Invalid referral code Provided.");
+      } // ✅
+
       const RFUser = await bot.api.getChat(refUserId);
 
       if (!RFUser) {
@@ -105,7 +106,7 @@ module.exports = {
       }
 
       await db.set(`users.${userId}`, {
-        $: 100,
+        $: 70,
         joined_at: Date.now(),
         ref_by: args[0],
         ref_code: newRefCode,
@@ -114,7 +115,7 @@ module.exports = {
 
       await db.set(`refCodes.${newRefCode}.cId`, userId);
 
-      await db.add(`users.${refUserId}.total_ref`, 1);
+      let updatedReferral = await db.add(`users.${refUserId}.total_ref`, 1);
       await db.add(`users.${refUserId}.$`, 50);
 
       const refName = RFUser.username
@@ -123,7 +124,7 @@ module.exports = {
 
       const msg = buildWelcomeMessage(
         username,
-        100,
+        70,
         `🎉 You joined using <b>${refName}</b>'s referral!`,
         newRefCode,
         botUsername
@@ -140,11 +141,11 @@ module.exports = {
 
 👤 ${username}
 🪙 +50 credits added  
-👥 Total referrals updated!`,
+👥 Total referrals ${updatedReferral}!`,
         { parse_mode: "HTML" }
       );
 
-      tgLogger.log(`🤝 ${username} joined via ${refName} | +100`);
+      tgLogger.log(`🤝 ${username} joined via ${refName} | +70`);
     }
   },
 };
