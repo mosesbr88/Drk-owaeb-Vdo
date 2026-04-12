@@ -22,3 +22,5 @@ ${link}
     link,
   };
 }
+
+module.exports = buildWelcomeMessage;
