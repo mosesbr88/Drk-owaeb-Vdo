@@ -116,11 +116,11 @@ module.exports = {
 
     // With referral
     else {
-      if (!RFCode[args[0]]) {
-        return ctx.reply("❌ Invalid or expired referral code.");
+      if (!(await db.get(`refCodes.${args[0]}.cId`))) {
+        return ctx.reply("❌ Invalid referral code Provided.");
       }
 
-      const refUserId = RFCode[args[0]].createdBy;
+      const refUserId = await db.get(`refCodes.${newRefCode}.cId`);
       const RFUser = await bot.api.getChat(refUserId);
 
       if (!RFUser) {
