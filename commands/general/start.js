@@ -34,10 +34,10 @@ module.exports = {
         return ctx.reply("❌ You are already registered. Referral not allowed. Try /start instead.");
       } // ✅
 
-      ctx.reply(
+      /*ctx.reply(
         `<b>💐 Welcome Back!</b>\n\n<pre>${JSON.stringify(deta, null, 2)}</pre>`,
         { parse_mode: "HTML" }
-      );
+      );*/
 
       const msg = buildStartMessage({
         credit: deta.$,
@@ -144,7 +144,7 @@ module.exports = {
       }
 
       await db.set(`users.${userId}`, {
-        $: 70,
+        $: 30,
         joined_at: Date.now(),
         ref_by: args[0],
         ref_code: newRefCode,
@@ -154,7 +154,7 @@ module.exports = {
       await db.set(`refCodes.${newRefCode}.cId`, userId);
 
       let updatedReferral = await db.add(`users.${refUserId}.total_ref`, 1);
-      await db.add(`users.${refUserId}.$`, 50);
+      await db.add(`users.${refUserId}.$`, 20);
 
       const refName = RFUser.username
         ? `@${RFUser.username}`
@@ -162,7 +162,7 @@ module.exports = {
 
       const msg = buildWelcomeMessage(
         username,
-        70,
+        30,
         `🎉 You joined using <b>${refName}</b>'s referral!`,
         newRefCode,
         botUsername
@@ -179,7 +179,7 @@ module.exports = {
         `🎉 <b>New Referral Joined!</b>
 
 👤 ${username}
-🪙 +50 credits added  
+🪙 +20 credits added to your account 
 👥 Total referrals ${refData.total_ref -1} +1!`,
         { parse_mode: "HTML" }
       );
@@ -193,7 +193,7 @@ module.exports = {
     refCount: refData.total_ref,
     userRefCode: newRefCode,
     joinDate: getJoinDate(),
-    bonus: 70
+    bonus: 30
   }),
   { parse_mode: "HTML" });
     }
