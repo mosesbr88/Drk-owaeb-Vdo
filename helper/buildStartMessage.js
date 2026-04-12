@@ -26,7 +26,7 @@ ${link}
 function buildStartMessage(arg){
   let user = arg.user || null
     , credit = arg.credit || 0
-    , refText = arg.refText || "*"
+    , totalRefferals = arg.totalRefferals || "-1"
     , refCode = arg.refCode || "/\\"
     , botUsername = arg.botUsername || null;
   const link = `https://t.me/${botUsername}?start=${refCode}`;
@@ -37,7 +37,7 @@ function buildStartMessage(arg){
 
 🪙 <b>Balance:</b> $${credit} 
 
-${refText}
+👥 <b>Total Referrals:</b> ${totalRefferals}
 
 <blockquote>
 🔗 <b>Your Referral Link</b>
