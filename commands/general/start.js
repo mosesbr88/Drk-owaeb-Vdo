@@ -168,7 +168,7 @@ module.exports = {
 
 👤 ${username}
 🪙 +50 credits added  
-👥 Total referrals ${updatedReferral}!`,
+👥 Total referrals +1!`,
         { parse_mode: "HTML" }
       );
 
