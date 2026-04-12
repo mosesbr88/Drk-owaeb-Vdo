@@ -14,7 +14,7 @@ function getJoinDate() {
   }).format(new Date());
 }
 
-let buildWelcomeMessage = require("../../helper/buildWelcomeMessage.js");
+let { buildWelcomeMessage, buildStartMessage } = require("../../helper/buildStartMessage.js");
 
 module.exports = {
   name: "start",
@@ -34,10 +34,36 @@ module.exports = {
         return ctx.reply("❌ You are already registered. Referral not allowed. Try /start instead.");
       } // ✅
 
-      return ctx.reply(
+      ctx.reply(
         `<b>💐 Welcome Back!</b>\n\n<pre>${JSON.stringify(deta, null, 2)}</pre>`,
         { parse_mode: "HTML" }
       );
+
+      const msg = buildStartMessage({
+        credit: deta.$,
+        user: username,
+        refCode: deta.ref_code,
+        botUsername: bot.usetName
+      });
+      
+    const keyboard = new InlineKeyboard()
+      .url(
+        "🔗 Share",
+        `https://t.me/share/url?url=${encodeURIComponent(
+          msg.link
+        )}&text=${encodeURIComponent(
+          `🎁 Join this bot & watch V¡deos 🌚;
+
+» ${atob("Qw==")}¡${atob("UA==")}¡ • ԁ${atob("cg==")}κ ${atob("dw==")}€${atob("Yg==")} • ${atob("YzByTg==")}`
+        )}`
+      )
+      .text("📋 Copy", "copy_ref");
+      
+      await ctx.reply(msg.text, {
+        parse_mode: "HTML",
+        reply_markup: keyboard,
+      });
+      return;
     } // ✅
 
     // Create new ref code
