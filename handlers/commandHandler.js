@@ -72,6 +72,6 @@ module.exports = (bot) => {
     if (cmd.isOwner && !isOwner(ctx)) return ctx.reply("❌ Owner only");
     if (cmd.isAdmin && !(await isAdmin(ctx))) return ctx.reply("❌ Admin only");
 
-    await cmd.execute(ctx, args, bot);
+    await cmd.execute(bot, ctx, args);
   });
 };
