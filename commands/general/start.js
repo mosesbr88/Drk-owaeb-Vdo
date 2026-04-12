@@ -184,7 +184,7 @@ module.exports = {
         { parse_mode: "HTML" }
       );
 
-      tgLogger.log(`🤝 ${username} joined via ${refName} | +70`);
+      //tgLogger.log(`🤝 ${username} joined via ${refName} | +70`);
       tgLogger.log(newUserLogTemplate({
     username,
     id: userId,
