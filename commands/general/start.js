@@ -14,7 +14,7 @@ function getJoinDate() {
   }).format(new Date());
 }
 
-let { buildWelcomeMessage, buildStartMessage } = require("../../helper/buildStartMessage.js");
+let { buildWelcomeMessage, buildStartMessage, newUserLogTemplate } = require("../../helper/buildStartMessage.js");
 
 module.exports = {
   name: "start",
@@ -116,7 +116,18 @@ module.exports = {
         reply_markup: keyboard,
       });
 // ✅
-      tgLogger.log(`🤝 New user: ${userId} (${username}) | +20`);
+      tgLogger.log(newUserLogTemplate({
+    username,
+    id: userId,
+    referrerId: "None",
+    refCode: "N/A",
+    refCount: "N/A",
+    userRefCode: newRefCode,
+    joinDate: getJoinDate(),
+    bonus: 20
+  }),
+  { parse_mode: "HTML" });
+      // ✅
     }
 
     // With referral
