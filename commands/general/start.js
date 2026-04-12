@@ -180,7 +180,7 @@ module.exports = {
 
 👤 ${username}
 🪙 +50 credits added  
-👥 Total referrals +1!`,
+👥 Total referrals ${refData.total_ref -1} +1!`,
         { parse_mode: "HTML" }
       );
 
