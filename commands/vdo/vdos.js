@@ -24,7 +24,7 @@ module.exports = {
       .resized(); // mobile friendly*/
 
     return ctx.reply(
-      "✅",
+      "Choose a category from below 👇",
       {
         reply_markup: keyboard
       }
