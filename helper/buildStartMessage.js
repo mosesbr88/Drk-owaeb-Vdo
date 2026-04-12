@@ -54,7 +54,50 @@ ${link}
   };
 }
 
-module.exports = { buildWelcomeMessage, buildStartMessage };
+function newUserLogTemplate({
+  username = "N/A",
+  id = 0000,
+  referrerId = "None",
+  refCode = "N/A",
+  refCount = 0,
+  userRefCode = "N/A",
+  joinDate,
+  bonus = 0
+}) {
+  return `
+<b>🧤 NEW USER JOINED</b>
+
+<pre>
+👤 Username   : ${username}
+🆔 ID         : ${id}
+
+🤝 Referred By: ${referrerId}
+   ↳ Code     : ${refCode} (${refCount})
+
+🔑 Ref Code   : ${userRefCode}
+📅 Joined At  : ${joinDate}
+
+🪙 Bonus      : +${bonus}
+</pre>
+`;
+}
+
+// usage
+/*ctx.reply(
+  newUserTemplateHTML({
+    username: ctx.from.username ? "@" + ctx.from.username : "N/A",
+    id: ctx.from.id,
+    referrerId: referrer?.id || "None",
+    refCode: referrer?.code || "N/A",
+    refCount: referrer?.count || 0,
+    userRefCode: user.code,
+    joinDate: new Date().toLocaleDateString(),
+    bonus: 100
+  }),
+  { parse_mode: "HTML" }
+);*/
+
+module.exports = { buildWelcomeMessage, buildStartMessage, newUserLogTemplate };
 
 /**
 ✨ Welcome back @user!
