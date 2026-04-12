@@ -173,6 +173,7 @@ module.exports = {
         reply_markup: keyboard,
       });
 
+      let refData = await db.get(`users.${refUserId}`);
       await bot.api.sendMessage(
         refUserId,
         `🎉 <b>New Referral Joined!</b>
@@ -184,6 +185,17 @@ module.exports = {
       );
 
       tgLogger.log(`🤝 ${username} joined via ${refName} | +70`);
+      tgLogger.log(newUserLogTemplate({
+    username,
+    id: userId,
+    referrerId: `${refUserId} : ${refName}`,
+    refCode: refData.ref_code,
+    refCount: refData.total_ref,
+    userRefCode: newRefCode,
+    joinDate: getJoinDate(),
+    bonus: 70
+  }),
+  { parse_mode: "HTML" });
     }
   },
 };
