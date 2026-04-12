@@ -9,7 +9,7 @@ module.exports = {
     const keyboard = new Keyboard().resized();
 
       for(let i=0; i<vdoConfig.length; i++){
-        keyboard.text(vdoConfig[i].);
+        keyboard.text(vdoConfig[i].name);
       };
           
     /*  .text("🎬 Video 1")
