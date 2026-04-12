@@ -18,6 +18,7 @@ ${link}
 
 💡 <i>Invite friends & earn more rewards!</i>
 ❓ Use /help to explore all commands
+🎬 Use /videos to open category panel
 `,
     link,
   };
