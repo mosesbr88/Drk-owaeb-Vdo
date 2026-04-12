@@ -7,7 +7,25 @@ const vdoMap = Object.fromEntries(
 module.exports = {
   event: "message:text",
 
-  execute(bot, ctx) {
-    console.log("Message:", ctx.message.text);
+  async execute(bot, ctx) {
+    const text = ctx.message.text
+    , video = videoMap[text];
+    if (!video) return;
+
+    // 👉 user referral count (example)
+    const userReferrals = 0;
+
+    // 🔒 referral check
+    if (video.ref_req && userReferrals < video.ref_req) {
+      return ctx.reply(
+        `🔒 Need ${video.ref_req} referral(s) to unlock this video`
+      );
+    }
+
+    // ✅ send video
+    return ctx.reply(
+        `✅`
+      );
+    //return ctx.replyWithVideo(video.file);
   }
 };
