@@ -9,7 +9,7 @@ module.exports = {
 
   async execute(bot, ctx) {
     const text = ctx.message.text
-    , video = videoMap[text];
+    , video = vdoMap[text];
     if (!video) return;
 
     // 👉 user referral count (example)
