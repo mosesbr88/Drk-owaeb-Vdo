@@ -2,7 +2,7 @@ module.exports = {
   name: "help",
   description: "Show help",
 
-  execute(ctx, args, bot) {
+  execute(bot, ctx, args) {
     const cmds = [...bot.commands.keys()].join(", ");
     ctx.reply(`Commands: ${cmds}`);
   }
