@@ -42,8 +42,9 @@ module.exports = {
       const msg = buildStartMessage({
         credit: deta.$,
         user: username,
+        totalRefferals: deta.total_ref,
         refCode: deta.ref_code,
-        botUsername: bot.usetName
+        botUsername: bot.userName
       });
       
     const keyboard = new InlineKeyboard()
