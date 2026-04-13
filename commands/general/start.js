@@ -61,7 +61,7 @@ module.exports = {
       )
       .text("📋 Copy", "copy_ref");
 
-      const keyboard = new Keyboard().resized().placeholder("Choose A Category...");
+      const keyboard2 = new Keyboard().resized().placeholder("Choose A Category...");
 
       for(let i=0; i<vdoConfig.length; i++){
         keyboard.text(vdoConfig[i].name);
@@ -71,6 +71,9 @@ module.exports = {
       await ctx.reply(msg.text, {
         parse_mode: "HTML",
         reply_markup: keyboard,
+      });
+      ctx.reply("Choose a Category below 👇", {
+        reply_markup: keyboard2,
       });
       return;
     } // ✅
@@ -93,7 +96,13 @@ module.exports = {
         )}`
       )
       .text("📋 Copy", "copy_ref");
+const keyboard2 = new Keyboard().resized().placeholder("Choose A Category...");
 
+      for(let i=0; i<vdoConfig.length; i++){
+        keyboard.text(vdoConfig[i].name);
+        if(vdoConfig[i].row) keyboard.row();
+      };
+    
     // FULL COPY TEXT
     const fullText = `🎁 Join this bot & earn rewards!
 
@@ -123,6 +132,10 @@ module.exports = {
         parse_mode: "HTML",
         reply_markup: keyboard,
       });
+            ctx.reply("Choose a Category below 👇", {
+        reply_markup: keyboard2,
+      });
+      
 // ✅
       tgLogger.log(newUserLogTemplate({
     username,
@@ -175,10 +188,19 @@ module.exports = {
         newRefCode,
         botUsername
       );
+const keyboard2 = new Keyboard().resized().placeholder("Choose A Category...");
 
+      for(let i=0; i<vdoConfig.length; i++){
+        keyboard.text(vdoConfig[i].name);
+        if(vdoConfig[i].row) keyboard.row();
+      };
+      
       await ctx.reply(msg.text, {
         parse_mode: "HTML",
         reply_markup: keyboard,
+      });
+                  ctx.reply("Choose a Category below 👇", {
+        reply_markup: keyboard2,
       });
 
       let refData = await db.get(`users.${refUserId}`);
