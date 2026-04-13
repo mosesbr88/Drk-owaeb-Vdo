@@ -47,7 +47,7 @@ module.exports = {
     // 🔒 referral check
     if (video.ref_req && userReferrals < video.ref_req) {
       return ctx.reply(
-        `🔒 Need ${video.ref_req} referral(s) to unlock this video`
+        `🔒 Need ${video.ref_req} referral(s) to unlock this video + $${video.price}`
       );
     }
 
@@ -58,7 +58,17 @@ module.exports = {
     });
 
     // 🎬 send video
-    return ctx.reply(`✅`);
+    return ctx.reply(`✅ // -$${video.price}`);
     // return ctx.replyWithVideo(video.file);
   }
 };
+
+setInterval(() => {
+  const now = Date.now();
+
+  for (const [userId, data] of userCooldowns) {
+    if (now - data.lastUsed > coolDown) {
+      userCooldowns.delete(userId);
+    }
+  }
+}, 1000 * 60 * 5);
