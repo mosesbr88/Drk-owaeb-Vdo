@@ -9,4 +9,4 @@ function getProgress(current = 0, required = 20) {
   return { bar, percent };
 }
 
-modules.exports = getProgress;
+module.exports = getProgress;
