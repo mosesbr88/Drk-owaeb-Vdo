@@ -75,7 +75,7 @@ bot.on("message", async (ctx) => {
   // ========================
   // ✅ DONE UPLOAD
   // ========================
-  if (text && text.startsWith("$doneUp")) {
+  if (text && text === "$doneUp") {
     if (!session.uploading) return;
 
     const otp = generateOTP();
