@@ -64,8 +64,8 @@ module.exports = {
       const keyboard2 = new Keyboard().resized().placeholder("Choose A Category...");
 
       for(let i=0; i<vdoConfig.length; i++){
-        keyboard.text(vdoConfig[i].name);
-        if(vdoConfig[i].row) keyboard.row();
+        keyboard2.text(vdoConfig[i].name);
+        if(vdoConfig[i].row) keyboard2.row();
       };
       
       await ctx.reply(msg.text, {
@@ -99,8 +99,8 @@ module.exports = {
 const keyboard2 = new Keyboard().resized().placeholder("Choose A Category...");
 
       for(let i=0; i<vdoConfig.length; i++){
-        keyboard.text(vdoConfig[i].name);
-        if(vdoConfig[i].row) keyboard.row();
+        keyboard2.text(vdoConfig[i].name);
+        if(vdoConfig[i].row) keyboard2.row();
       };
     
     // FULL COPY TEXT
@@ -191,8 +191,8 @@ const keyboard2 = new Keyboard().resized().placeholder("Choose A Category...");
 const keyboard2 = new Keyboard().resized().placeholder("Choose A Category...");
 
       for(let i=0; i<vdoConfig.length; i++){
-        keyboard.text(vdoConfig[i].name);
-        if(vdoConfig[i].row) keyboard.row();
+        keyboard2.text(vdoConfig[i].name);
+        if(vdoConfig[i].row) keyboard2.row();
       };
       
       await ctx.reply(msg.text, {
