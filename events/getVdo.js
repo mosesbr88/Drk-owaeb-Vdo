@@ -47,15 +47,20 @@ module.exports = {
       warned: false
     });
 
-    // 👉 user referral count (example)
-    const userReferrals = 0;
-
+    let userDetails = await db.get(`users.${userId}`);
+    let user_ref = userDetails.total_ref;
+    let user_bal = userDetails.$;
     // 🔒 referral check
-    if (video.ref_req && userReferrals < video.ref_req) {
+    if (video.ref_req && user_ref < video.ref_req) {
       return ctx.reply(
-        `🔒 Need ${video.ref_req} referral(s) to unlock this video + $${video.price}`
+        `🔒 Need ${video.ref_req} referral(s) to unlock this video! \n\nShare your referral Link to your friends: use /start to get your referral link..`
       );
-    }
+    } else
+      if(video.price && user_bal < video.price){
+        return ctx.reply(
+        `💰 Need ${video.pricd} Credits to get this video! \n\nYou have ${user_bal} credits in yout account.`
+      );
+      };
 
 
 
