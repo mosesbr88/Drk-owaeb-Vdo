@@ -134,7 +134,9 @@ module.exports = {
     reply_markup: {
       inline_keyboard: [[{
             text: "🔗 Share Referral Link",
-            url: `https://t.me/${bot.userName}?start=${userDetails.ref_code}`
+            url: `https://t.me/share/url?url=${encodeURIComponent(
+          `https://t.me/${bot.userName}?start=${userDetails.ref_code}`
+        )}`
           }]]}}
 );
       return ctx.reply(
