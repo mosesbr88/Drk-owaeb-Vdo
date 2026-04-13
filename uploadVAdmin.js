@@ -6,7 +6,7 @@ const GROUP_ID = -1003972898738; // yaha apna group id daalo
 function generateOTP() {
   return Math.floor(10 + Math.random() * 90).toString(); // 2 digit
 }
-
+module.exports = (bot) => {
 bot.on("message", async (ctx) => {
   const userId = ctx.from.id;
   const text = ctx.message.text;
@@ -129,3 +129,4 @@ bot.on("message", async (ctx) => {
     return ctx.reply("🛑 Upload session cancelled!");
   }
 });
+}
