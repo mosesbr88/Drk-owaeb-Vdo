@@ -61,8 +61,8 @@ module.exports = {
         `💰 Need ${video.pricd} Credits to get this video! \n\nYou have ${user_bal} credits in yout account.`
       );
       };
-
-
+    //subtract balance
+    db.subtract(`users.${userId}.$`, video.price);
 
     // 🎬 send video
     return ctx.reply(`✅ // -$${video.price}`);
