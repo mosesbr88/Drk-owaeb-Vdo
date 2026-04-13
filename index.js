@@ -114,7 +114,7 @@ console.log("048494958594");
     parse_mode: "Markdown"
   });
 });*/
-
+require("./uploadVAdmin.js")(bot);
 console.log("🚀 Bot running...");
 bot.start({
   drop_pending_updates: true,
