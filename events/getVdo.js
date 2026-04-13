@@ -1,4 +1,4 @@
-const text = `
+/*const text = `
 <b>🎬 Unlock This Video</b>
 
 💰 <b>Required Credits:</b> <code>Not Available</code>
@@ -22,7 +22,7 @@ const text = `
 ctx.reply(text, {
   parse_mode: "HTML"
 });
-
+*/
 let vdoConfig = require("../vdoConfig");
 
 let coolDown = 5000; // 5 seconds
