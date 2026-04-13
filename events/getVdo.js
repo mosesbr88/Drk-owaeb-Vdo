@@ -58,7 +58,7 @@ module.exports = {
     } else
       if(video.price && user_bal < video.price){
         return ctx.reply(
-        `💰 Need ${video.pricd} Credits to get this video! \n\nYou have ${user_bal} credits in yout account.`
+        `💰 Need ${video.price} Credits to get this video! \n\nYou have ${user_bal} credits in yout account.`
       );
       };
     //subtract balance
