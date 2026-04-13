@@ -114,12 +114,12 @@ module.exports = {
     let user_bal = userDetails.$;
     // 🔒 referral check
     if (video.ref_req && user_ref < video.ref_req) {
-       const { bar, percent } = getProgress(current, required);
+       const { bar, percent } = getProgress(user_ref, video.ref_req || 0);
        return ctx.reply(
   `
 <b>🔒 Unlock This Video</b>
 
-👥 <b>Referrals:</b> <code>${user_ref}/${video.ref_req}</code>
+👥 <b>Referrals:</b> <code>${user_ref}/${video.ref_req || 0}</code>
 
 📊 <b>Progress:</b>
 <code>${bar}</code>
@@ -134,7 +134,7 @@ module.exports = {
     reply_markup: {
       inline_keyboard: [[{
             text: "🔗 Share Referral Link",
-            url: `https://t.me/${bot.userName}?start=${referralCode}`
+            url: `https://t.me/${bot.userName}?start=${userDetails.ref_code}`
           }]]}}
 );
       return ctx.reply(
