@@ -1,4 +1,7 @@
 let vdoConfig = require("../vdoConfig");
+let coolDown = 5000;
+
+
 
 const vdoMap = Object.fromEntries(
   vdoConfig.map(v => [v.name, v])
