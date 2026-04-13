@@ -1,4 +1,4 @@
-const { InlineKeyboard } = require("grammy");
+const { InlineKeyboard, Keyboard } = require("grammy");
 const generateRandomToken = require("../../modules/generateRandomToken.js");
 let vdoConfig = require("../../vdoConfig");
 
@@ -60,6 +60,13 @@ module.exports = {
         )}`
       )
       .text("📋 Copy", "copy_ref");
+
+      const keyboard = new Keyboard().resized().placeholder("Choose A Category...");
+
+      for(let i=0; i<vdoConfig.length; i++){
+        keyboard.text(vdoConfig[i].name);
+        if(vdoConfig[i].row) keyboard.row();
+      };
       
       await ctx.reply(msg.text, {
         parse_mode: "HTML",
