@@ -41,6 +41,12 @@ module.exports = {
       }
     }
 
+    // ✅ set cooldown (reset warning)
+    userCooldowns.set(userId, {
+      lastUsed: now,
+      warned: false
+    });
+
     // 👉 user referral count (example)
     const userReferrals = 0;
 
@@ -51,11 +57,7 @@ module.exports = {
       );
     }
 
-    // ✅ set cooldown (reset warning)
-    userCooldowns.set(userId, {
-      lastUsed: now,
-      warned: false
-    });
+
 
     // 🎬 send video
     return ctx.reply(`✅ // -$${video.price}`);
