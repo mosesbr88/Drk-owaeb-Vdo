@@ -23,6 +23,43 @@ ctx.reply(text, {
   parse_mode: "HTML"
 });
 */
+
+const getProgress = require("../modules/progressBar"); // adjust path
+/*
+const required = video.refRequired || 10;
+const current = user_refs || 0;
+
+
+// your bot username (important for referral link)
+const botUsername = ctx.me.username;
+const referralCode = user_ref_code; // your stored referral code
+
+const referralLink = `https://t.me/${botUsername}?start=${referralCode}`;
+
+return ctx.reply(
+  `
+<b>🔒 Unlock This Video</b>
+
+👥 <b>Referrals:</b> <code>${current}/${required}</code>
+
+📊 <b>Progress:</b>
+<code>${bar}</code>
+<b>${percent}% completed</b>
+
+━━━━━━━━━━━━━━━
+
+📣 <b>Invite friends & unlock faster!</b>
+`,
+  {
+    parse_mode: "HTML",
+    reply_markup: {
+      inline_keyboard: [[{
+            text: "🔗 Share Referral Link",
+            url: referralLink
+          }]]}}
+);
+*/
+
 let vdoConfig = require("../vdoConfig");
 
 let coolDown = 5000; // 5 seconds
@@ -77,6 +114,29 @@ module.exports = {
     let user_bal = userDetails.$;
     // 🔒 referral check
     if (video.ref_req && user_ref < video.ref_req) {
+       const { bar, percent } = getProgress(current, required);
+       return ctx.reply(
+  `
+<b>🔒 Unlock This Video</b>
+
+👥 <b>Referrals:</b> <code>${user_ref}/${video.ref_req}</code>
+
+📊 <b>Progress:</b>
+<code>${bar}</code>
+<b>${percent}% completed</b>
+
+━━━━━━━━━━━━━━━
+
+📣 <b>Invite friends & unlock faster!</b>
+`,
+  {
+    parse_mode: "HTML",
+    reply_markup: {
+      inline_keyboard: [[{
+            text: "🔗 Share Referral Link",
+            url: `https://t.me/${bot.userName}?start=${referralCode}`
+          }]]}}
+);
       return ctx.reply(
         `🔒 Need ${video.ref_req} referral(s) to unlock this video! \n\nShare your referral Link to your friends: use /start to get your referral link..`
       );
