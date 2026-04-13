@@ -16,9 +16,10 @@ module.exports = {
 
     const now = Date.now();
     const cooldown = 7 * 24 * 60 * 60 * 1000;
-
-    const lastWeekly = await db.get(`users.${userId}.weekly`) || 0;
-    const refs = await db.get(`users.${userId}.total_ref`) || 0;
+    const userDetails = await db.get(`users.${userId}`);
+    
+    const lastWeekly = userDetails.weekly || 0;
+    const refs = userDetails.total_ref || 0;
 
     const requiredRefs = 20;
 
@@ -28,7 +29,7 @@ module.exports = {
       const remainingRefs = requiredRefs - refs;
 
       const botUsername = (await bot.api.getMe()).username;
-      const shareLink = `https://t.me/${bot.userName}?start=${userId}`;
+      const shareLink = `https://t.me/${bot.userName}?start=${userDetails.ref_code}`;
 
       return ctx.reply(
         `<b>🔒 Weekly Locked</b>\n\n` +
@@ -72,7 +73,7 @@ module.exports = {
     await db.add(`users.${userId}.$`, reward);
     await db.set(`users.${userId}.weekly`, now);
 
-    const totalCredits = await db.get(`users.${userId}.$`);
+    const totalCredits = userDetails.$ + reward;
 
     await ctx.reply(
       `<b>🎁 Weekly Reward</b>\n\n` +
