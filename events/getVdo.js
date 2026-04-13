@@ -93,10 +93,10 @@ module.exports = {
          if (isDailyAvailable || isWeeklyAvailable) {
             rewardsText += `🚨 <b>Rewards Pending!</b>\n\n`;
             if (isDailyAvailable) {
-               rewardsText += `• 📅 You haven’t claimed your <b>Daily Reward</b>\n   ➤ Use: <code>/daily</code>\n\n`;
+               rewardsText += `• 📅 You haven’t claimed your <b>Daily Reward</b>\n   ➤ Use: /daily\n\n`;
             }
             if (isWeeklyAvailable) {
-               rewardsText += `• 🗓️ You haven’t claimed your <b>Weekly Reward</b>\n   ➤ Use: <code>/weekly</code>\n\n`;
+               rewardsText += `• 🗓️ You haven’t claimed your <b>Weekly Reward</b>\n   ➤ Use: /weekly\n\n`;
             }
             rewardsText += `━━━━━━━━━━━━━━━\n`;
          }
