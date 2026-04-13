@@ -1,3 +1,28 @@
+const text = `
+<b>🎬 Unlock This Video</b>
+
+💰 <b>Required Credits:</b> <code>Not Available</code>
+👤 <b>Your Credits:</b> <code>0</code>
+
+━━━━━━━━━━━━━━━
+
+🚨 <b>Rewards Pending!</b>
+
+• 📅 You haven’t claimed your <b>Daily Reward</b>
+   ➤ Use: <code>/daily</code>
+
+• 🗓️ You haven’t claimed your <b>Weekly Reward</b>
+   ➤ Use: <code>/weekly</code>
+
+━━━━━━━━━━━━━━━
+
+💡 <i>Earn credits & unlock more videos!</i>
+`;
+
+ctx.reply(text, {
+  parse_mode: "HTML"
+});
+
 let vdoConfig = require("../vdoConfig");
 
 let coolDown = 5000; // 5 seconds
@@ -58,8 +83,27 @@ module.exports = {
     } else
       if(video.price && user_bal < video.price){
         return ctx.reply(
-        `💰 Need ${video.price} Credits to get this video! \n\nYou have ${user_bal} credits in yout account.`
-      );
+        `
+<b>🎬 Unlock This Video Category</b>
+
+💰 <b>Required Credits:</b> <code>${video.price}</code>
+👤 <b>Your Credits:</b> <code>${user_bal}</code>
+${if (userDetails
+━━━━━━━━━━━━━━━
+
+🚨 <b>Rewards Pending!</b>
+
+• 📅 You haven’t claimed your <b>Daily Reward</b>
+   ➤ Use: <code>/daily</code>
+
+• 🗓️ You haven’t claimed your <b>Weekly Reward</b>
+   ➤ Use: <code>/weekly</code>
+
+━━━━━━━━━━━━━━━
+
+💡 <i>Earn credits & unlock more videos!</i>
+`, 
+          {parse_mode: "HTML"});
       };
     //subtract balance
     db.subtract(`users.${userId}.$`, video.price);
