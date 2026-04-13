@@ -1,5 +1,6 @@
 const { InlineKeyboard } = require("grammy");
 const generateRandomToken = require("../../modules/generateRandomToken.js");
+let vdoConfig = require("../../vdoConfig");
 
 function getJoinDate() {
   return new Intl.DateTimeFormat("en-IN", {
