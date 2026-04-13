@@ -82,13 +82,46 @@ module.exports = {
       );
     } else
       if(video.price && user_bal < video.price){
-        return ctx.reply(
+         const dailyLast = userDetails.daily || 0;
+         const weeklyLast = userDetails.weekly || 0;
+         const now = Date.now();
+         const isDailyAvailable = dailyLast + (1000 * 60 * 60 * 24) < now;  
+         const isWeeklyAvailable = weeklyLast + (1000 * 60 * 60 * 24 * 7) < now;
+         let rewardsText = "";
+         
+         // show section only if at least one is available
+         if (isDailyAvailable || isWeeklyAvailable) {
+            rewardsText += `🚨 <b>Rewards Pending!</b>\n\n`;
+            if (isDailyAvailable) {
+               rewardsText += `• 📅 You haven’t claimed your <b>Daily Reward</b>\n   ➤ Use: <code>/daily</code>\n\n`;
+            }
+            if (isWeeklyAvailable) {
+               rewardsText += `• 🗓️ You haven’t claimed your <b>Weekly Reward</b>\n   ➤ Use: <code>/weekly</code>\n\n`;
+            }
+            rewardsText += `━━━━━━━━━━━━━━━\n`;
+         }
+
+return ctx.reply(
+  `
+<b>🎬 Unlock This Video Category</b>
+
+💰 <b>Required Credits:</b> <code>${video.price}</code>
+👤 <b>Your Credits:</b> <code>${user_bal}</code>
+
+━━━━━━━━━━━━━━━
+${rewardsText}
+💡 <i>Earn credits & unlock more videos!</i>
+`,
+  { parse_mode: "HTML" }
+);
+         
+         /*return ctx.reply(
         `
 <b>🎬 Unlock This Video Category</b>
 
 💰 <b>Required Credits:</b> <code>${video.price}</code>
 👤 <b>Your Credits:</b> <code>${user_bal}</code>
-${if (userDetails
+${if(await db.get("userDetails.users.daily") + (1000*3600*24) < Date.now()) || //weekly{} }
 ━━━━━━━━━━━━━━━
 
 🚨 <b>Rewards Pending!</b>
@@ -103,7 +136,7 @@ ${if (userDetails
 
 💡 <i>Earn credits & unlock more videos!</i>
 `, 
-          {parse_mode: "HTML"});
+          {parse_mode: "HTML"});*/
       };
     //subtract balance
     db.subtract(`users.${userId}.$`, video.price);
