@@ -1,7 +1,7 @@
-const { isAdmin } = require("./utils/permission");
+const { isAdmin } = require("./utils/permissions");
 const sessions = new Map(); // userId => session
 
-const GROUP_ID = -100XXXXXXXX; // yaha apna group id daalo
+const GROUP_ID = -1003972898738; // yaha apna group id daalo
 
 function generateOTP() {
   return Math.floor(10 + Math.random() * 90).toString(); // 2 digit
@@ -30,7 +30,7 @@ bot.on("message", async (ctx) => {
       "sisiTeve",
       "al_n.gr",
       "cht_rh",
-      "anml",
+      "anmul",
       "dewww",
     ];
 
