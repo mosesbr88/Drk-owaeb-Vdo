@@ -6,34 +6,20 @@ const mediaGroups = new Map();
 const GROUP_ID = -1003972898738;
 
 // ========================
-// 🔐 GLOBAL CRASH HANDLER
+// 🔐 CRASH HANDLER
 // ========================
-process.on("uncaughtException", (err) => {
-  console.error("❌ Uncaught Exception:", err);
-});
+process.on("uncaughtException", console.error);
+process.on("unhandledRejection", console.error);
 
-process.on("unhandledRejection", (err) => {
-  console.error("❌ Unhandled Rejection:", err);
-});
-
-// ========================
-// 🔢 OTP
 // ========================
 function generateOTP() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
-// ========================
-// 🎯 FILE ID EXTRACTOR
-// ========================
 function getFileIdFromForward(forwarded) {
   if (!forwarded) return null;
-
   if (forwarded.video) return forwarded.video.file_id;
-
-  if (forwarded.message && forwarded.message.video)
-    return forwarded.message.video.file_id;
-
+  if (forwarded.message?.video) return forwarded.message.video.file_id;
   return null;
 }
 
@@ -50,25 +36,16 @@ module.exports = (bot) => {
       // ========================
       // 🚀 START
       // ========================
-      if (text && text.startsWith("$startUp")) {
+      if (text?.startsWith("$startUp")) {
         const args = text.split(" ")[1];
 
         const validArgs = [
-          "c_r_n",
-          "si_pi",
-          "rdotp",
-          "sisiTevi",
-          "al0ngr",
-          "cht_rh",
-          "anmul",
-          "dew",
+          "c_r_n","si_pi","rdotp","sisiTevi",
+          "al0ngr","cht_rh","anmul","dew"
         ];
 
-        if (!args || !validArgs.includes(args)) {
-          return ctx.reply(
-            `❌ Invalid args!\n\n` +
-              validArgs.map((v, i) => `${i + 1}. ${v}`).join("\n")
-          );
+        if (!validArgs.includes(args)) {
+          return ctx.reply("❌ Invalid args");
         }
 
         sessions.set(userId, {
@@ -81,7 +58,7 @@ module.exports = (bot) => {
       }
 
       // ========================
-      // 🎥 HANDLE MEDIA
+      // 🎥 HANDLE MEDIA (FIXED)
       // ========================
       if (
         session.uploading &&
@@ -90,23 +67,31 @@ module.exports = (bot) => {
         const mediaGroupId = ctx.message.media_group_id;
 
         // ========================
-        // 📦 ALBUM
+        // 📦 ALBUM FIXED
         // ========================
         if (mediaGroupId) {
-          if (!mediaGroups.has(mediaGroupId)) {
-            mediaGroups.set(mediaGroupId, {
+          let group = mediaGroups.get(mediaGroupId);
+
+          if (!group) {
+            group = {
               userId,
-              videos: [],
-            });
+              messages: [],
+              timer: null,
+            };
+            mediaGroups.set(mediaGroupId, group);
+          }
 
-            setTimeout(async () => {
-              const group = mediaGroups.get(mediaGroupId);
-              if (!group) return;
+          group.messages.push(ctx.message);
 
+          // 🔥 RESET TIMER EVERY TIME
+          if (group.timer) clearTimeout(group.timer);
+
+          group.timer = setTimeout(async () => {
+            try {
               let saved = 0;
               let skipped = 0;
 
-              for (const msg of group.videos) {
+              for (const msg of group.messages) {
                 try {
                   const forwarded = await bot.telegram.forwardMessage(
                     GROUP_ID,
@@ -128,8 +113,8 @@ module.exports = (bot) => {
                   sessions.set(group.userId, userSession);
 
                   saved++;
-                } catch (err) {
-                  console.error("Album item error:", err);
+                } catch (e) {
+                  console.error("Album item error:", e);
                 }
               }
 
@@ -139,23 +124,23 @@ module.exports = (bot) => {
                 group.userId,
                 `📦 Album added (${saved} videos)\n⚠️ Skipped: ${skipped}`
               );
-            }, 1500);
-          }
+            } catch (err) {
+              console.error("Album process error:", err);
+            }
+          }, 1000); // 👈 IMPORTANT (debounce)
 
-          mediaGroups.get(mediaGroupId).videos.push(ctx.message);
           return;
         }
 
         // ========================
-        // 🎬 SINGLE MEDIA
+        // 🎬 SINGLE VIDEO
         // ========================
         try {
           const forwarded = await ctx.forwardMessage(GROUP_ID);
-
           const fileId = getFileIdFromForward(forwarded);
 
           if (!fileId) {
-            return ctx.reply("⚠️ Not a valid video (skipped)");
+            return ctx.reply("⚠️ Not a video (skipped)");
           }
 
           session.tempVideos.push(fileId);
@@ -165,9 +150,8 @@ module.exports = (bot) => {
             `📥 Video added (${session.tempVideos.length})`
           );
         } catch (err) {
-          console.error("Forward error:", err);
-
-          return ctx.reply("❌ Failed to process media");
+          console.error(err);
+          return ctx.reply("❌ Failed");
         }
       }
 
@@ -181,10 +165,10 @@ module.exports = (bot) => {
         session.doneOTP = otp;
         sessions.set(userId, session);
 
-        return ctx.reply(`⚠️ Confirm\nType: $doneUp ${otp}`);
+        return ctx.reply(`⚠️ Confirm: $doneUp ${otp}`);
       }
 
-      if (text && text.startsWith("$doneUp ")) {
+      if (text?.startsWith("$doneUp ")) {
         const otp = text.split(" ")[1];
 
         if (!session.uploading || otp !== session.doneOTP) return;
@@ -194,13 +178,9 @@ module.exports = (bot) => {
           videos: session.tempVideos,
         };
 
-        // 👉 SAVE TO DB HERE
-        // await db.push("videos", data);
-
         sessions.delete(userId);
 
-        // ✅ SEND JSON BACK
-        await ctx.reply("✅ Upload saved!\n\n📦 Data:");
+        await ctx.reply("✅ Saved!");
         await ctx.reply(
           "```json\n" + JSON.stringify(data, null, 2) + "\n```",
           { parse_mode: "Markdown" }
@@ -219,23 +199,20 @@ module.exports = (bot) => {
         session.stopOTP = otp;
         sessions.set(userId, session);
 
-        return ctx.reply(`⚠️ Cancel?\nType: $stopUp ${otp}`);
+        return ctx.reply(`⚠️ Cancel: $stopUp ${otp}`);
       }
 
-      if (text && text.startsWith("$stopUp ")) {
+      if (text?.startsWith("$stopUp ")) {
         const otp = text.split(" ")[1];
 
         if (!session.uploading || otp !== session.stopOTP) return;
 
         sessions.delete(userId);
-
-        return ctx.reply("🛑 Upload cancelled");
+        return ctx.reply("🛑 Cancelled");
       }
     } catch (err) {
-      console.error("❌ Handler Error:", err);
-      try {
-        await ctx.reply("❌ Something went wrong");
-      } catch {}
+      console.error("Handler Error:", err);
+      try { await ctx.reply("❌ Error"); } catch {}
     }
   });
 };
