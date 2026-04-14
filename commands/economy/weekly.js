@@ -21,7 +21,7 @@ module.exports = {
     const lastWeekly = userDetails.weekly || 0;
     const refs = userDetails.total_ref || 0;
 
-    const requiredRefs = 20;
+    const requiredRefs = 5;
 
     // ❌ Not enough referrals
     if (refs < requiredRefs) {
