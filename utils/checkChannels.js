@@ -1,22 +1,24 @@
+
 const TTL = 15 * 60 * 1000; // 15 minutes
 const joinCache = new Map();
-
 const channels = [
   "@fexh4b"
 ];
 
 let cleanerStarted = false;
 
-// 🔍 Main function → returns ONLY true/false
-async function isUserJoined(ctx, userId) {
+// 🔍 Main function
+async function isUserJoined(ctx, userId, force = false) {
   startCleaner();
 
   const now = Date.now();
 
-  // ✅ cache check
-  const cached = joinCache.get(userId);
-  if (cached && cached.expiry > now) {
-    return cached.value; // true / false
+  // ✅ skip cache if force = true
+  if (!force) {
+    const cached = joinCache.get(userId);
+    if (cached && cached.expiry > now) {
+      return cached.value;
+    }
   }
 
   try {
@@ -25,7 +27,7 @@ async function isUserJoined(ctx, userId) {
       const status = member.status;
 
       if (status === "left" || status === "kicked") {
-        // ❌ not joined → cache false
+        // ❌ cache false
         joinCache.set(userId, {
           value: false,
           expiry: now + TTL
@@ -34,7 +36,7 @@ async function isUserJoined(ctx, userId) {
       }
     }
 
-    // ✅ all joined
+    // ✅ cache true
     joinCache.set(userId, {
       value: true,
       expiry: now + TTL
@@ -48,7 +50,7 @@ async function isUserJoined(ctx, userId) {
   }
 }
 
-// 🔘 Get only NOT joined channels (no cache intentionally)
+// 🔘 Keyboard (fresh check always)
 isUserJoined.getJoinKeyboard = async function (ctx, userId) {
   let notJoined = [];
 
@@ -87,7 +89,6 @@ function startCleaner() {
 
   setInterval(() => {
     const now = Date.now();
-
     for (const [userId, data] of joinCache.entries()) {
       if (data.expiry < now) {
         joinCache.delete(userId);
@@ -97,79 +98,3 @@ function startCleaner() {
 }
 
 module.exports = isUserJoined;
-
-      
-/*module.exports = (bot) => {
-
-  // 🔁 Middleware for every message
-  bot.use(async (ctx, next) => {
-    if (!ctx.from) return next();
-
-    const userId = ctx.from.id;
-
-    // ✅ Check cache
-    const cached = joinCache.get(userId);
-    if (cached && cached > Date.now()) {
-      return next();
-    }
-
-    const joined = await isUserJoined(ctx, userId);
-
-    if (joined) {
-      // store in cache
-      joinCache.set(userId, Date.now() + TTL);
-      return next();
-    }
-
-    // ❌ Not joined → send message
-    await ctx.reply(
-      `<b>⚠️ Access Restricted</b>\n\n` +
-      `You must join all the required channels to use this bot.\n\n` +
-      `After joining, click the button below.`,
-      {
-        parse_mode: "HTML",
-        reply_markup: getJoinKeyboard()
-      }
-    );
-  });
-
-  // 🔘 Button handler
-  bot.callbackQuery("check_join", async (ctx) => {
-    const userId = ctx.from.id;
-
-    const joined = await isUserJoined(ctx, userId);
-
-    if (!joined) {
-      return ctx.answerCallbackQuery({
-        text: "❌ You haven't joined all channels yet!",
-        show_alert: true
-      });
-    }
-
-    // ✅ success → cache + delete message
-    joinCache.set(userId, Date.now() + TTL);
-
-    try {
-      await ctx.deleteMessage();
-    } catch (e) {}
-
-    await ctx.answerCallbackQuery({
-      text: "✅ Verified!"
-    });
-
-    await ctx.reply(
-      `<b>🎉 Success!</b>\n\nYou can now use the bot.`,
-      { parse_mode: "HTML" }
-    );
-  });
-
-  // 🧹 Auto cleanup expired cache (optional but good)
-  setInterval(() => {
-    const now = Date.now();
-    for (const [userId, expiry] of joinCache.entries()) {
-      if (expiry < now) {
-        joinCache.delete(userId);
-      }
-    }
-  }, 5 * 60 * 1000); // every 5 min
-};*/
