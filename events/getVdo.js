@@ -162,10 +162,19 @@ ${if(await db.get("userDetails.users.daily") + (1000*3600*24) < Date.now()) || /
           {parse_mode: "HTML"});*/
       };
     //subtract balance
+    let vdoId = await db.get(`vdo.${video.id}`) || [];
+    if(vdoId.length < 1){
+      try{
+      return ctx.replyWithVideo("This Video Isn't Available at this moment, please use another category or contact qdmin for support");
+      }catch{ return; };
+      return;
+    }
+    
     db.subtract(`users.${userId}.$`, video.price);
 
-     let vdoId = await db.get("vdo.c_r_n");
-     return ctx.replyWithVideo(vdoId[0]);
+     
+    let vdoIdToSend = vdoId[getSecureRandomNumber(vdoId.length)];
+     return ctx.replyWithVideo(vdoIdToSend).catch(console.log);;
     // 🎬 send video
     //return ctx.reply(`✅ // -$${video.price}`);
     // return ctx.replyWithVideo(video.file);
