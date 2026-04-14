@@ -1,45 +1,106 @@
 const TTL = 15 * 60 * 1000; // 15 minutes
 const joinCache = new Map();
 
-// Replace with your channels (must be public or bot must be admin)
 const channels = [
   "@channelA",
   "@channelB",
   "@channelC"
 ];
 
+let cleanerStarted = false;
+
+// 🔍 Main function → returns ONLY true/false
 async function isUserJoined(ctx, userId) {
+  startCleaner();
+
+  const now = Date.now();
+
+  // ✅ cache check
+  const cached = joinCache.get(userId);
+  if (cached && cached.expiry > now) {
+    return cached.value; // true / false
+  }
+
   try {
     for (const ch of channels) {
       const member = await ctx.api.getChatMember(ch, userId);
-
       const status = member.status;
+
       if (status === "left" || status === "kicked") {
+        // ❌ not joined → cache false
+        joinCache.set(userId, {
+          value: false,
+          expiry: now + TTL
+        });
         return false;
       }
     }
+
+    // ✅ all joined
+    joinCache.set(userId, {
+      value: true,
+      expiry: now + TTL
+    });
+
     return true;
+
   } catch (err) {
     console.error("Join check error:", err);
     return false;
   }
 }
 
-function getJoinKeyboard() {
+// 🔘 Get only NOT joined channels (no cache intentionally)
+isUserJoined.getJoinKeyboard = async function (ctx, userId) {
+  let notJoined = [];
+
+  for (const ch of channels) {
+    try {
+      const member = await ctx.api.getChatMember(ch, userId);
+      const status = member.status;
+
+      if (status === "left" || status === "kicked") {
+        notJoined.push(ch);
+      }
+    } catch {
+      notJoined.push(ch);
+    }
+  }
+
   return {
     inline_keyboard: [
-      ...channels.map(ch => ([
-        { text: `Join ${ch}`, url: `https://t.me/${ch.replace("@", "")}` }
+      ...notJoined.map(ch => ([
+        {
+          text: `Join ${ch}`,
+          url: `https://t.me/${ch.replace("@", "")}`
+        }
       ])),
       [
         { text: "✅ I've Joined", callback_data: "check_join" }
       ]
     ]
   };
+};
+
+// 🧹 cleaner (auto once)
+function startCleaner() {
+  if (cleanerStarted) return;
+  cleanerStarted = true;
+
+  setInterval(() => {
+    const now = Date.now();
+
+    for (const [userId, data] of joinCache.entries()) {
+      if (data.expiry < now) {
+        joinCache.delete(userId);
+      }
+    }
+  }, 5 * 60 * 1000);
 }
 
-module.export = isUserJoined;
+module.exports = isUserJoined;
 
+      
 /*module.exports = (bot) => {
 
   // 🔁 Middleware for every message
