@@ -16,6 +16,7 @@ function generateOTP() {
 function getFileId(msg) {
   if (!msg) return null;
   if (msg.video) return msg.video.file_id;
+  if (msg.message?.video) return msg.message.video.file_id;
   return null;
 }
 
@@ -27,7 +28,7 @@ module.exports = (bot) => {
 
       if (!isAdmin(ctx)) return;
 
-      let session = sessions.get(userId) || {};
+      let session = sessions.get(userId);
 
       // ========================
       // 🚀 START
@@ -41,40 +42,57 @@ module.exports = (bot) => {
         ];
 
         if (!validArgs.includes(args)) {
-          return ctx.reply("❌ Invalid args");
+          return ctx.reply(
+            "❌ Invalid args\n\n" +
+            validArgs.map((v, i) => `${i+1}. ${v}`).join("\n")
+          );
         }
 
         sessions.set(userId, {
           uploading: true,
           category: args,
           tempVideos: [],
+          videoSet: new Set(),
+          duplicateCount: 0,
         });
 
         return ctx.reply(`✅ Upload started: ${args}`);
       }
 
+      if (!session || !session.uploading) return;
+
       // ========================
-      // 🎥 HANDLE MEDIA (NO TIMEOUT)
+      // 🎥 HANDLE VIDEO
       // ========================
-      if (session.uploading && ctx.message.video) {
+      if (ctx.message.video) {
         try {
-          // direct forward
           const forwarded = await ctx.forwardMessage(GROUP_ID);
 
-          const fileId =
-            forwarded.video?.file_id ||
-            forwarded.message?.video?.file_id;
+          const fileId = getFileId(forwarded);
 
           if (!fileId) {
             return ctx.reply("⚠️ Skipped (not video)");
           }
 
+          // 🔥 DUPLICATE CHECK
+          if (session.videoSet.has(fileId)) {
+            session.duplicateCount++;
+            sessions.set(userId, session);
+
+            return ctx.reply(
+              `⚠️ Duplicate ignored\n📊 Duplicates: ${session.duplicateCount}`
+            );
+          }
+
+          // ✅ SAVE UNIQUE
+          session.videoSet.add(fileId);
           session.tempVideos.push(fileId);
           sessions.set(userId, session);
 
           return ctx.reply(
-            `📥 Added (${session.tempVideos.length})`
+            `📥 Added (${session.tempVideos.length})\n⚠️ Duplicates: ${session.duplicateCount}`
           );
+
         } catch (err) {
           console.error("Forward error:", err);
           return ctx.reply("❌ Forward failed");
@@ -85,8 +103,6 @@ module.exports = (bot) => {
       // ✅ DONE
       // ========================
       if (text === "$doneUp") {
-        if (!session.uploading) return;
-
         const otp = generateOTP();
         session.doneOTP = otp;
         sessions.set(userId, session);
@@ -97,28 +113,31 @@ module.exports = (bot) => {
       if (text?.startsWith("$doneUp ")) {
         const otp = text.split(" ")[1];
 
-        if (!session.uploading || otp !== session.doneOTP) return;
+        if (otp !== session.doneOTP) return;
 
         const data = {
           category: session.category,
+          totalVideos: session.tempVideos.length,
+          duplicatesIgnored: session.duplicateCount,
           videos: session.tempVideos,
         };
 
         sessions.delete(userId);
 
-        await ctx.reply("✅ Saved!");
+        await ctx.reply("✅ Upload completed!");
+
         await ctx.reply(
           "```json\n" + JSON.stringify(data, null, 2) + "\n```",
           { parse_mode: "Markdown" }
         );
+
+        return;
       }
 
       // ========================
       // 🛑 STOP
       // ========================
       if (text === "$stopUp") {
-        if (!session.uploading) return;
-
         const otp = generateOTP();
         session.stopOTP = otp;
         sessions.set(userId, session);
@@ -129,10 +148,10 @@ module.exports = (bot) => {
       if (text?.startsWith("$stopUp ")) {
         const otp = text.split(" ")[1];
 
-        if (!session.uploading || otp !== session.stopOTP) return;
+        if (otp !== session.stopOTP) return;
 
         sessions.delete(userId);
-        return ctx.reply("🛑 Cancelled");
+        return ctx.reply("🛑 Upload cancelled");
       }
 
     } catch (err) {
