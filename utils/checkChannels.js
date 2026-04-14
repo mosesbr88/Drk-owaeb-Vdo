@@ -2,9 +2,7 @@ const TTL = 15 * 60 * 1000; // 15 minutes
 const joinCache = new Map();
 
 const channels = [
-  "@channelA",
-  "@channelB",
-  "@channelC"
+  "@fexh4b"
 ];
 
 let cleanerStarted = false;
