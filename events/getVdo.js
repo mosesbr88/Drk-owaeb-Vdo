@@ -175,7 +175,7 @@ ${if(await db.get("userDetails.users.daily") + (1000*3600*24) < Date.now()) || /
      let rndomNum = getSecureRandomNumber(vdoId.length);
     if(rndomNum === 0){ rndomNum = 0 }else{ rndomNum -= 1 };
     
-    let vdoIdToSend = vdoId[];
+    let vdoIdToSend = vdoId[rndomNum];
      return ctx.replyWithVideo(vdoIdToSend).catch(console.log);;
     // 🎬 send video
     //return ctx.reply(`✅ // -$${video.price}`);
