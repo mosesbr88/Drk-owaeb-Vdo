@@ -1,7 +1,7 @@
 const { isAdmin } = require("./utils/permissions");
 
 const sessions = new Map(); // userId => session
-const mediaGroups = new Map(); // media_group_id => { userId, videos: [], timeout }
+const mediaGroups = new Map(); // media_group_id => temp storage
 
 const GROUP_ID = -1003972898738;
 
@@ -20,7 +20,21 @@ process.on("unhandledRejection", (err) => {
 // 🔢 OTP
 // ========================
 function generateOTP() {
-  return Math.floor(1000 + Math.random() * 9000).toString(); // 4 digit (better)
+  return Math.floor(1000 + Math.random() * 9000).toString();
+}
+
+// ========================
+// 🎯 SAFE FILE ID EXTRACTOR
+// ========================
+function getFileIdFromForward(forwarded) {
+  if (!forwarded) return null;
+
+  if (forwarded.video) return forwarded.video.file_id;
+
+  if (forwarded.message && forwarded.message.video)
+    return forwarded.message.video.file_id;
+
+  return null;
 }
 
 module.exports = (bot) => {
@@ -83,41 +97,45 @@ module.exports = (bot) => {
               videos: [],
             });
 
-            // wait to collect all album items
+            // collect full album
             setTimeout(async () => {
-              try {
-                const group = mediaGroups.get(mediaGroupId);
-                if (!group) return;
+              const group = mediaGroups.get(mediaGroupId);
+              if (!group) return;
 
-                let savedCount = 0;
+              let savedCount = 0;
 
-                for (const msg of group.videos) {
+              for (const msg of group.videos) {
+                try {
                   const forwarded = await bot.telegram.forwardMessage(
                     GROUP_ID,
                     msg.chat.id,
                     msg.message_id
                   );
 
-                  const fileId = forwarded.video.file_id;
+                  const fileId = getFileIdFromForward(forwarded);
+                  if (!fileId) continue;
 
-                  session.tempVideos.push(fileId);
+                  const userSession = sessions.get(group.userId);
+                  if (!userSession) continue;
+
+                  userSession.tempVideos.push(fileId);
+                  sessions.set(group.userId, userSession);
+
                   savedCount++;
+                } catch (err) {
+                  console.error("Album item error:", err);
                 }
-
-                sessions.set(userId, session);
-                mediaGroups.delete(mediaGroupId);
-
-                await ctx.reply(
-                  `📦 Album added (${savedCount} videos)`
-                );
-              } catch (err) {
-                console.error("Album Error:", err);
-                mediaGroups.delete(mediaGroupId);
               }
-            }, 1500); // wait for all messages
+
+              mediaGroups.delete(mediaGroupId);
+
+              await bot.telegram.sendMessage(
+                group.userId,
+                `📦 Album added (${savedCount} videos)`
+              );
+            }, 1500);
           }
 
-          // push message into album
           mediaGroups.get(mediaGroupId).videos.push(ctx.message);
           return;
         }
@@ -128,7 +146,9 @@ module.exports = (bot) => {
         try {
           const forwarded = await ctx.forwardMessage(GROUP_ID);
 
-          const fileId = forwarded.message.video.file_id;
+          const fileId = getFileIdFromForward(forwarded);
+
+          if (!fileId) throw new Error("file_id not found");
 
           session.tempVideos.push(fileId);
           sessions.set(userId, session);
@@ -137,8 +157,21 @@ module.exports = (bot) => {
             `📥 Video added (${session.tempVideos.length})`
           );
         } catch (err) {
-          console.error(err);
-          return ctx.reply("❌ Failed to forward video");
+          console.error("Forward error:", err);
+
+          // fallback (avoid false error)
+          try {
+            const fileId = ctx.message.video.file_id;
+
+            session.tempVideos.push(fileId);
+            sessions.set(userId, session);
+
+            return ctx.reply(
+              `⚠️ Forward issue but video saved (${session.tempVideos.length})`
+            );
+          } catch {}
+
+          return ctx.reply("❌ Failed to process video");
         }
       }
 
@@ -198,7 +231,7 @@ module.exports = (bot) => {
     } catch (err) {
       console.error("❌ Handler Error:", err);
       try {
-        ctx.reply("❌ Something went wrong, try again.");
+        await ctx.reply("❌ Something went wrong, try again.");
       } catch {}
     }
   });
