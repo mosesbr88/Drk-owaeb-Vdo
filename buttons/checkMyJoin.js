@@ -1,3 +1,6 @@
+const isUserJoined = require("../utils/checkChannels.js");
+
+
 module.exports = {
   name: "check_my_join",
 
