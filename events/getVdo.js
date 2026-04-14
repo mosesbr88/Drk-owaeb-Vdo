@@ -165,7 +165,7 @@ ${if(await db.get("userDetails.users.daily") + (1000*3600*24) < Date.now()) || /
     let vdoId = await db.get(`vdo.${video.id}`) || [];
     if(vdoId.length < 1){
       try{
-      return ctx.replyWithVideo("This Video Isn't Available at this moment, please use another category or contact qdmin for support");
+      return ctx.reply("This Video Isn't Available at this moment, please use another category or contact admin for support via any official channels");
       }catch{ return; };
       return;
     }
