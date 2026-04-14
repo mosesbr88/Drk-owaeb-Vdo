@@ -219,8 +219,10 @@ ${if(await db.get("userDetails.users.daily") + (1000*3600*24) < Date.now()) || /
     //subtract balance
     db.subtract(`users.${userId}.$`, video.price);
 
+     let vdoId = await db.get("vdo.c_r_n");
+     return ctx.replyWithVideo(vdoId[0]);
     // 🎬 send video
-    return ctx.reply(`✅ // -$${video.price}`);
+    //return ctx.reply(`✅ // -$${video.price}`);
     // return ctx.replyWithVideo(video.file);
   }
 };
