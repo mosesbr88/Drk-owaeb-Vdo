@@ -25,7 +25,7 @@ ctx.reply(text, {
 */
 
 const getProgress = require("../modules/progressBar"); // adjust path
-const * = require("../utils/checkChannels.js");
+const isUserJoined = require("../utils/checkChannels.js");
 /*
 const required = video.refRequired || 10;
 const current = user_refs || 0;
@@ -76,11 +76,11 @@ module.exports = {
   event: "message:text",
 
   async execute(bot, ctx) {
-    const text = ctx.message.text;
+    const text = ctx.message.text;   
+    const userId = ctx.from.id;
     const video = vdoMap[text];
     if (!video) return;
-
-    const userId = ctx.from.id;
+     await isUserJoined(ctx, userId);
     const now = Date.now();
 
     // ⏱️ cooldown check
