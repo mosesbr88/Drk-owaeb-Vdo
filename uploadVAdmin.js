@@ -24,14 +24,14 @@ bot.on("message", async (ctx) => {
     const args = text.split(" ")[1];
 
     const validArgs = [
-      "c_rr_n",
-      "ci_st_pi",
-      "r.dot.p",
-      "sisiTeve",
-      "al_n.gr",
+      "c_r_n",
+      "si_pi",
+      "rdotp",
+      "sisiTevi",
+      "al0ngr",
       "cht_rh",
       "anmul",
-      "dewww",
+      "dew",
     ];
 
     if (!args || !validArgs.includes(args)) {
