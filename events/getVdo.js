@@ -76,11 +76,26 @@ module.exports = {
   event: "message:text",
 
   async execute(bot, ctx) {
+     if (!ctx.from) return;
+     
     const text = ctx.message.text;   
     const userId = ctx.from.id;
     const video = vdoMap[text];
     if (!video) return;
-     await isUserJoined(ctx, userId);
+    const joined = await isUserJoined(ctx, userId);
+     if (!joined) {
+        await ctx.reply(
+      `<b>⚠️ Access Restricted</b>\n\n` +
+      `You must join all the required channels to use this bot.\n\n` +
+      `After joining, click the button below.`,
+      {
+        parse_mode: "HTML",
+        reply_markup: getJoinKeyboard()
+      }
+    );
+        return;
+     }
+     
     const now = Date.now();
 
     // ⏱️ cooldown check
