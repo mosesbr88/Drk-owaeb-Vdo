@@ -1,5 +1,5 @@
 
-const TTL = 10000; // 15 * 60 * 1000; // 15 minutes
+const TTL = 10 * 60 * 1000; // 15 minutes
 const joinCache = new Map();
 const channels = [
   "@fexh4b"
