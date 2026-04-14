@@ -6,8 +6,6 @@ const mediaGroups = new Map();
 const GROUP_ID = -1003972898738;
 
 // ========================
-// 🔐 CRASH HANDLER
-// ========================
 process.on("uncaughtException", console.error);
 process.on("unhandledRejection", console.error);
 
@@ -16,16 +14,16 @@ function generateOTP() {
   return Math.floor(1000 + Math.random() * 9000).toString();
 }
 
-function getFileIdFromForward(forwarded) {
-  if (!forwarded) return null;
-
-  if (forwarded.video) return forwarded.video.file_id;
-  if (forwarded.message?.video) return forwarded.message.video.file_id;
-
+function getFileId(msg) {
+  if (!msg) return null;
+  if (msg.video) return msg.video.file_id;
+  if (msg.message?.video) return msg.message.video.file_id;
   return null;
 }
 
 module.exports = (bot) => {
+  const tg = bot.telegram; // 🔥 SAFE INSTANCE
+
   bot.on("message", async (ctx) => {
     try {
       const userId = ctx.from.id;
@@ -47,10 +45,7 @@ module.exports = (bot) => {
         ];
 
         if (!validArgs.includes(args)) {
-          return ctx.reply(
-            "❌ Invalid args\n\n" +
-            validArgs.map((v, i) => `${i+1}. ${v}`).join("\n")
-          );
+          return ctx.reply("❌ Invalid args");
         }
 
         sessions.set(userId, {
@@ -72,7 +67,7 @@ module.exports = (bot) => {
         const mediaGroupId = ctx.message.media_group_id;
 
         // ========================
-        // 📦 ALBUM (FIXED)
+        // 📦 ALBUM (FINAL FIX)
         // ========================
         if (mediaGroupId) {
           let group = mediaGroups.get(mediaGroupId);
@@ -86,9 +81,12 @@ module.exports = (bot) => {
             mediaGroups.set(mediaGroupId, group);
           }
 
-          group.messages.push(ctx.message);
+          group.messages.push({
+            chatId: ctx.chat.id,
+            messageId: ctx.message.message_id,
+          });
 
-          // 🔥 debounce fix
+          // debounce
           if (group.timer) clearTimeout(group.timer);
 
           group.timer = setTimeout(async () => {
@@ -96,26 +94,26 @@ module.exports = (bot) => {
               let saved = 0;
               let skipped = 0;
 
-              for (const msg of group.messages) {
+              for (const m of group.messages) {
                 try {
-                  const forwarded = await ctx.telegram.forwardMessage(
+                  const forwarded = await tg.forwardMessage(
                     GROUP_ID,
-                    msg.chat.id,
-                    msg.message_id
+                    m.chatId,
+                    m.messageId
                   );
 
-                  const fileId = getFileIdFromForward(forwarded);
+                  const fileId = getFileId(forwarded);
 
                   if (!fileId) {
                     skipped++;
                     continue;
                   }
 
-                  const userSession = sessions.get(group.userId);
-                  if (!userSession) continue;
+                  const s = sessions.get(group.userId);
+                  if (!s) continue;
 
-                  userSession.tempVideos.push(fileId);
-                  sessions.set(group.userId, userSession);
+                  s.tempVideos.push(fileId);
+                  sessions.set(group.userId, s);
 
                   saved++;
                 } catch (e) {
@@ -125,14 +123,14 @@ module.exports = (bot) => {
 
               mediaGroups.delete(mediaGroupId);
 
-              await ctx.telegram.sendMessage(
+              await tg.sendMessage(
                 group.userId,
                 `📦 Album added (${saved} videos)\n⚠️ Skipped: ${skipped}`
               );
             } catch (err) {
               console.error("Album process error:", err);
             }
-          }, 1000);
+          }, 1200);
 
           return;
         }
@@ -141,8 +139,13 @@ module.exports = (bot) => {
         // 🎬 SINGLE MEDIA
         // ========================
         try {
-          const forwarded = await ctx.forwardMessage(GROUP_ID);
-          const fileId = getFileIdFromForward(forwarded);
+          const forwarded = await tg.forwardMessage(
+            GROUP_ID,
+            ctx.chat.id,
+            ctx.message.message_id
+          );
+
+          const fileId = getFileId(forwarded);
 
           if (!fileId) {
             return ctx.reply("⚠️ Not a video (skipped)");
@@ -155,8 +158,8 @@ module.exports = (bot) => {
             `📥 Video added (${session.tempVideos.length})`
           );
         } catch (err) {
-          console.error("Forward error:", err);
-          return ctx.reply("❌ Failed to process media");
+          console.error("Single error:", err);
+          return ctx.reply("❌ Failed");
         }
       }
 
@@ -170,7 +173,7 @@ module.exports = (bot) => {
         session.doneOTP = otp;
         sessions.set(userId, session);
 
-        return ctx.reply(`⚠️ Confirm upload\nType: $doneUp ${otp}`);
+        return ctx.reply(`⚠️ Confirm: $doneUp ${otp}`);
       }
 
       if (text?.startsWith("$doneUp ")) {
@@ -185,14 +188,11 @@ module.exports = (bot) => {
 
         sessions.delete(userId);
 
-        await ctx.reply("✅ Upload saved!\n\n📦 Data:");
-
+        await ctx.reply("✅ Saved!");
         await ctx.reply(
           "```json\n" + JSON.stringify(data, null, 2) + "\n```",
           { parse_mode: "Markdown" }
         );
-
-        return;
       }
 
       // ========================
@@ -205,7 +205,7 @@ module.exports = (bot) => {
         session.stopOTP = otp;
         sessions.set(userId, session);
 
-        return ctx.reply(`⚠️ Cancel upload\nType: $stopUp ${otp}`);
+        return ctx.reply(`⚠️ Cancel: $stopUp ${otp}`);
       }
 
       if (text?.startsWith("$stopUp ")) {
@@ -214,13 +214,12 @@ module.exports = (bot) => {
         if (!session.uploading || otp !== session.stopOTP) return;
 
         sessions.delete(userId);
-
-        return ctx.reply("🛑 Upload cancelled");
+        return ctx.reply("🛑 Cancelled");
       }
 
     } catch (err) {
       console.error("Handler Error:", err);
-      try { await ctx.reply("❌ Something went wrong"); } catch {}
+      try { await ctx.reply("❌ Error"); } catch {}
     }
   });
 };
