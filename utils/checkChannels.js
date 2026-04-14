@@ -1,5 +1,5 @@
 
-const TTL = 15 * 60 * 1000; // 15 minutes
+const TTL = 10000; // 15 * 60 * 1000; // 15 minutes
 const joinCache = new Map();
 const channels = [
   "@fexh4b"
@@ -76,7 +76,7 @@ isUserJoined.getJoinKeyboard = async function (ctx, userId) {
         }
       ])),
       [
-        { text: "✅ I've Joined", callback_data: "check_join" }
+        { text: "✅ I've Joined", callback_data: "check_my_join" }
       ]
     ]
   };
