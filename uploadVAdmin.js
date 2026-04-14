@@ -123,13 +123,20 @@ module.exports = (bot) => {
         };
 
         sessions.delete(userId);
+        for(let i = 0; i < data.videos.length; i++){
+          try{
+            db.push(`vdo.${data.category}`, data.videos[i]);
+          }catch{
+           await db.set(`vdo.${data.category}`, [data.videos[i]]);
+          }
+        }
 
-        await ctx.reply("✅ Upload completed!");
+        await ctx.reply(`✅ Upload completed! \n\nvid_count: ${data.totalVideos} . \nSaved: ${data.videos.length}`);
 
-        await ctx.reply(
+       /* await ctx.reply(
           "```json\n" + JSON.stringify(data, null, 2) + "\n```",
           { parse_mode: "Markdown" }
-        );
+        );*/
 
         return;
       }
