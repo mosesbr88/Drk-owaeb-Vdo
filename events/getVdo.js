@@ -90,7 +90,7 @@ module.exports = {
       `After joining, click the button below.`,
       {
         parse_mode: "HTML",
-        reply_markup: getJoinKeyboard()
+        reply_markup: await isUserJoined.getJoinKeyboard()
       }
     );
         return;
