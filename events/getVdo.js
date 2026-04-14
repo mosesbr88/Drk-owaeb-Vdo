@@ -1,65 +1,10 @@
-/*const text = `
-<b>🎬 Unlock This Video</b>
-
-💰 <b>Required Credits:</b> <code>Not Available</code>
-👤 <b>Your Credits:</b> <code>0</code>
-
-━━━━━━━━━━━━━━━
-
-🚨 <b>Rewards Pending!</b>
-
-• 📅 You haven’t claimed your <b>Daily Reward</b>
-   ➤ Use: <code>/daily</code>
-
-• 🗓️ You haven’t claimed your <b>Weekly Reward</b>
-   ➤ Use: <code>/weekly</code>
-
-━━━━━━━━━━━━━━━
-
-💡 <i>Earn credits & unlock more videos!</i>
-`;
-
-ctx.reply(text, {
-  parse_mode: "HTML"
-});
-*/
-
+function getSecureRandomNumber(max) {
+  const array = new Uint32Array(1);
+  crypto.getRandomValues(array);
+  return array[0] % (max + 1);
+}
 const getProgress = require("../modules/progressBar"); // adjust path
 const isUserJoined = require("../utils/checkChannels.js");
-/*
-const required = video.refRequired || 10;
-const current = user_refs || 0;
-
-
-// your bot username (important for referral link)
-const botUsername = ctx.me.username;
-const referralCode = user_ref_code; // your stored referral code
-
-const referralLink = `https://t.me/${botUsername}?start=${referralCode}`;
-
-return ctx.reply(
-  `
-<b>🔒 Unlock This Video</b>
-
-👥 <b>Referrals:</b> <code>${current}/${required}</code>
-
-📊 <b>Progress:</b>
-<code>${bar}</code>
-<b>${percent}% completed</b>
-
-━━━━━━━━━━━━━━━
-
-📣 <b>Invite friends & unlock faster!</b>
-`,
-  {
-    parse_mode: "HTML",
-    reply_markup: {
-      inline_keyboard: [[{
-            text: "🔗 Share Referral Link",
-            url: referralLink
-          }]]}}
-);
-*/
 
 let vdoConfig = require("../vdoConfig");
 
