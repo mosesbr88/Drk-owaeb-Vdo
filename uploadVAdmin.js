@@ -18,8 +18,10 @@ function generateOTP() {
 
 function getFileIdFromForward(forwarded) {
   if (!forwarded) return null;
+
   if (forwarded.video) return forwarded.video.file_id;
   if (forwarded.message?.video) return forwarded.message.video.file_id;
+
   return null;
 }
 
@@ -45,7 +47,10 @@ module.exports = (bot) => {
         ];
 
         if (!validArgs.includes(args)) {
-          return ctx.reply("❌ Invalid args");
+          return ctx.reply(
+            "❌ Invalid args\n\n" +
+            validArgs.map((v, i) => `${i+1}. ${v}`).join("\n")
+          );
         }
 
         sessions.set(userId, {
@@ -58,7 +63,7 @@ module.exports = (bot) => {
       }
 
       // ========================
-      // 🎥 HANDLE MEDIA (FIXED)
+      // 🎥 HANDLE MEDIA
       // ========================
       if (
         session.uploading &&
@@ -67,7 +72,7 @@ module.exports = (bot) => {
         const mediaGroupId = ctx.message.media_group_id;
 
         // ========================
-        // 📦 ALBUM FIXED
+        // 📦 ALBUM (FIXED)
         // ========================
         if (mediaGroupId) {
           let group = mediaGroups.get(mediaGroupId);
@@ -83,7 +88,7 @@ module.exports = (bot) => {
 
           group.messages.push(ctx.message);
 
-          // 🔥 RESET TIMER EVERY TIME
+          // 🔥 debounce fix
           if (group.timer) clearTimeout(group.timer);
 
           group.timer = setTimeout(async () => {
@@ -93,7 +98,7 @@ module.exports = (bot) => {
 
               for (const msg of group.messages) {
                 try {
-                  const forwarded = await bot.telegram.forwardMessage(
+                  const forwarded = await ctx.telegram.forwardMessage(
                     GROUP_ID,
                     msg.chat.id,
                     msg.message_id
@@ -120,20 +125,20 @@ module.exports = (bot) => {
 
               mediaGroups.delete(mediaGroupId);
 
-              await bot.telegram.sendMessage(
+              await ctx.telegram.sendMessage(
                 group.userId,
                 `📦 Album added (${saved} videos)\n⚠️ Skipped: ${skipped}`
               );
             } catch (err) {
               console.error("Album process error:", err);
             }
-          }, 1000); // 👈 IMPORTANT (debounce)
+          }, 1000);
 
           return;
         }
 
         // ========================
-        // 🎬 SINGLE VIDEO
+        // 🎬 SINGLE MEDIA
         // ========================
         try {
           const forwarded = await ctx.forwardMessage(GROUP_ID);
@@ -150,8 +155,8 @@ module.exports = (bot) => {
             `📥 Video added (${session.tempVideos.length})`
           );
         } catch (err) {
-          console.error(err);
-          return ctx.reply("❌ Failed");
+          console.error("Forward error:", err);
+          return ctx.reply("❌ Failed to process media");
         }
       }
 
@@ -165,7 +170,7 @@ module.exports = (bot) => {
         session.doneOTP = otp;
         sessions.set(userId, session);
 
-        return ctx.reply(`⚠️ Confirm: $doneUp ${otp}`);
+        return ctx.reply(`⚠️ Confirm upload\nType: $doneUp ${otp}`);
       }
 
       if (text?.startsWith("$doneUp ")) {
@@ -180,7 +185,8 @@ module.exports = (bot) => {
 
         sessions.delete(userId);
 
-        await ctx.reply("✅ Saved!");
+        await ctx.reply("✅ Upload saved!\n\n📦 Data:");
+
         await ctx.reply(
           "```json\n" + JSON.stringify(data, null, 2) + "\n```",
           { parse_mode: "Markdown" }
@@ -199,7 +205,7 @@ module.exports = (bot) => {
         session.stopOTP = otp;
         sessions.set(userId, session);
 
-        return ctx.reply(`⚠️ Cancel: $stopUp ${otp}`);
+        return ctx.reply(`⚠️ Cancel upload\nType: $stopUp ${otp}`);
       }
 
       if (text?.startsWith("$stopUp ")) {
@@ -208,11 +214,13 @@ module.exports = (bot) => {
         if (!session.uploading || otp !== session.stopOTP) return;
 
         sessions.delete(userId);
-        return ctx.reply("🛑 Cancelled");
+
+        return ctx.reply("🛑 Upload cancelled");
       }
+
     } catch (err) {
       console.error("Handler Error:", err);
-      try { await ctx.reply("❌ Error"); } catch {}
+      try { await ctx.reply("❌ Something went wrong"); } catch {}
     }
   });
 };
