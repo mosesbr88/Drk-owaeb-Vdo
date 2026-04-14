@@ -125,13 +125,14 @@ module.exports = (bot) => {
         sessions.delete(userId);
         for(let i = 0; i < data.videos.length; i++){
           try{
-            db.push(`vdo.${data.category}`, data.videos[i]);
+            await db.push(`vdo.${data.category}`, data.videos[i]);
           }catch{
+            console.log("err-hehehe");
            await db.set(`vdo.${data.category}`, [data.videos[i]]);
           }
         }
 
-        await ctx.reply(`✅ Upload completed! \n\nvid_count: ${data.totalVideos} . \nSaved: ${data.videos.length}`);
+        await ctx.reply(`✅ Upload completed! \n\nvid_count: ${data.totalVideos} . \nSaved: ${data.videos.length} \nCat: ${data.category}`);
 
        /* await ctx.reply(
           "```json\n" + JSON.stringify(data, null, 2) + "\n```",
