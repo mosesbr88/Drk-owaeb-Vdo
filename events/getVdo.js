@@ -25,6 +25,7 @@ ctx.reply(text, {
 */
 
 const getProgress = require("../modules/progressBar"); // adjust path
+const * = require("../utils/checkChannels.js");
 /*
 const required = video.refRequired || 10;
 const current = user_refs || 0;
