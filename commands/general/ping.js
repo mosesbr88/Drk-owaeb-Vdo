@@ -1,5 +1,6 @@
 module.exports = {
   name: "ping",
+  hidden: true,
 
   async execute(bot, ctx) {
     const start = Date.now();
