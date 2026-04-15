@@ -14,6 +14,21 @@ const { token } = require("./config");
 
 const bot = new Bot(token);
 
+bot.api.config.use((prev, method, payload, signal) => {
+  const mediaMethods = [
+    "sendVideo",
+    "sendDocument",
+    "sendPhoto",
+    "sendAnimation"
+  ];
+
+  if (mediaMethods.includes(method)) {
+    payload.protect_content = true;
+  }
+
+  return prev(method, payload, signal);
+});
+
 // middlewares
 //bot.use(require("./middlewares/logger"));
 bot.use(require("./middlewares/session"));
