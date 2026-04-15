@@ -1,5 +1,6 @@
 module.exports = {
   name: "help",
+  hidden: true,
   description: "Show help",
 
   execute(bot, ctx, args) {
