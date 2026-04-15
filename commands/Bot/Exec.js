@@ -1,5 +1,6 @@
 module.exports = {
   name: "eval",
+  hidden: true,
   aliases: ["run"],
   isOwner: true,
   execute(bot, ctx) {
