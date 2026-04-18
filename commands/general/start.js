@@ -204,6 +204,7 @@ const keyboard2 = new Keyboard().resized().placeholder("Choose A Category...");
       });
 
       let refData = await db.get(`users.${refUserId}`);
+      try {
       await bot.api.sendMessage(
         refUserId,
         `🎉 <b>New Referral Joined!</b>
@@ -213,7 +214,9 @@ const keyboard2 = new Keyboard().resized().placeholder("Choose A Category...");
 👥 Total referrals ${refData.total_ref -1} +1!`,
         { parse_mode: "HTML" }
       );
-
+      } catch(err){
+        console.log(err);
+      };
       //tgLogger.log(`🤝 ${username} joined via ${refName} | +70`);
       tgLogger.log(newUserLogTemplate({
     username,
