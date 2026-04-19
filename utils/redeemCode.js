@@ -39,6 +39,7 @@ async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails) {
     //codeData.users.push(userId);
 
     // ✅ Success reply
+    codeData.users.push(userId);
     tgLogger.log(
   `User redeemed code: ${redeemCode}
 
