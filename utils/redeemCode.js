@@ -39,14 +39,14 @@ async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails) {
     //codeData.users.push(userId);
 
     // ✅ Success reply
-    codeData.users.push(userId);
+  //  codeData.users.push(userId);
     tgLogger.log(
   `User redeemed code: ${redeemCode}
 
 UserId: ${userId}
 Username: ${username}
 Reward: $${codeData["$"]}
-Total Users: [${codeData.users.join(", ")}]
+Total Users: [${userId}, ${codeData.users.join(", ")}]
 
 Slots Left: ${codeData.max_users - (codeData.users.length + 1)}`
 );
