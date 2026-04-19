@@ -5,4 +5,4 @@ let {userId, username} = userDetails;
   ctx.reply(`${redeemCode} \n ${userId} \n ${username}`);
 };
 
-module.export = handleRedeemCodes;
+module.exports = handleRedeemCodes;
