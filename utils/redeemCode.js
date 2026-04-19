@@ -19,17 +19,17 @@ async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails) {
 
     // ❌ Expired
     if (Date.now() > codeData.validUntil) {
-      return ctx.reply("⏳ This code has expired.");
+      return ctx.reply("⏳ This redeem code has expired.");
     }
 
     // ❌ Max users reached
     if (codeData.users.length >= codeData.max_users) {
-      return ctx.reply("🚫 This code has already been fully redeemed.");
+      return ctx.reply("🚫 This redeem code has already been fully redeemed.");
     }
 
     // ❌ Already used
     if (codeData.users.includes(userId)) {
-      return ctx.reply("⚠️ You have already used this code.");
+      return ctx.reply("⚠️ You have already used this redeem code.");
     }
 
     // ✅ Reward add karo
