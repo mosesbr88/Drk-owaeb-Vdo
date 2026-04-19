@@ -33,10 +33,13 @@ module.exports = {
     const deta = await db.get(`users.${userId}`);
     if (deta) {
       if (args.length > 0) {
+        try {
         if(args[0].startsWith("RC_"){
           handleRedeemCodes(bot, ctx, args[0], {userId, username});
           return;
         }
+        } catch (er){ console.log(er);}
+        
         return ctx.reply("❌ You are already registered. Referral not allowed. Try /start instead.");
       } // ✅
 
