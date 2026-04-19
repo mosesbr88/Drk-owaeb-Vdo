@@ -34,7 +34,7 @@ module.exports = {
     if (deta) {
       if (args.length > 0) {
         try {
-        if(args[0].startsWith("RC_"){
+        if(args[0].startsWith("RC_")){
           handleRedeemCodes(bot, ctx, args[0], {userId, username});
           return;
         }
