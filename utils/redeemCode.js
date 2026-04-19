@@ -56,7 +56,7 @@ async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails, db) {
 
     // ✅ Success reply
     return ctx.reply(
-      `🎉 Redeem successful!\n\n💰 Reward: ${codeData["$"]}\n👤 User: ${username}`
+      `🎉 Redeem successful!\n\n💰 Reward: ${codeData["$"]}\n👤 User: ${username} \n\n${codeData.users.join("/")}`
     );
 
   } catch (err) {
