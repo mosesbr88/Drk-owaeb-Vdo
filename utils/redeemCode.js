@@ -1,5 +1,5 @@
 
-async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails, db) {
+async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails) {
   try {
     let { userId, username } = userDetails;
 
