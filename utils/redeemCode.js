@@ -50,7 +50,7 @@ async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails, db) {
     codeData.users.push(userId);
 
     // Save back
-    redeemCodes[redeemCode] = codeData;
+  //  redeemCodes[redeemCode] = codeData;
  //   await db.set("redeemCodes", redeemCodes);
 //    await db.set("users", userDb);
 
