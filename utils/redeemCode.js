@@ -1,3 +1,12 @@
+let redeemCodes = {
+      "100_member_special": {
+        "$": 100,
+        users: [],
+        validUntil: Date.now() + 1000 * 30, // 10 min
+        max_users: 1
+      }
+    };
+
 async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails, db) {
   try {
     let { userId, username } = userDetails;
@@ -6,14 +15,7 @@ async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails, db) {
     let redeemCode = rawRedeemCode.replace("RC_", "").trim();
 
     // Database se codes lao (fallback demo object)
-    let redeemCodes = {
-      "100_member_special": {
-        "$": 100,
-        users: [],
-        validUntil: Date.now() + 1000 * 30, // 10 min
-        max_users: 1
-      }
-    };
+  //  let redeemCodes;
 
     let codeData = redeemCodes[redeemCode];
 
