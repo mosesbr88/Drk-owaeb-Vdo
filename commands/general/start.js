@@ -1,6 +1,7 @@
 const { InlineKeyboard, Keyboard } = require("grammy");
 const generateRandomToken = require("../../modules/generateRandomToken.js");
 let vdoConfig = require("../../vdoConfig");
+let handleRedeemCodes = require("../../utils/redeemCode.js");
 
 function getJoinDate() {
   return new Intl.DateTimeFormat("en-IN", {
@@ -32,13 +33,12 @@ module.exports = {
     const deta = await db.get(`users.${userId}`);
     if (deta) {
       if (args.length > 0) {
+        if(args[0].startsWith("RC_"){
+          handleRedeemCodes(bot, ctx, args[0], {userId, username});
+          return;
+        }
         return ctx.reply("❌ You are already registered. Referral not allowed. Try /start instead.");
       } // ✅
-
-      /*ctx.reply(
-        `<b>💐 Welcome Back!</b>\n\n<pre>${JSON.stringify(deta, null, 2)}</pre>`,
-        { parse_mode: "HTML" }
-      );*/
 
       const msg = buildStartMessage({
         credit: deta.$,
