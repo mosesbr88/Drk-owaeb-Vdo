@@ -6,18 +6,11 @@ async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails) {
     // Remove prefix
     let redeemCode = rawRedeemCode.replace("RC_", "").trim();
 
-    // Database se codes lao (fallback demo object)
-        let redeemCodes = await db.get("redeemCodes"); /*{
-      "100_member_special": {
-        "$": 100,
-        users: [],
-        validUntil: Date.now() + 1000 * 30, // 10 min
-        max_users: 1
-      }
-    };*/
+    // Database se codes lao 
+        let redeemCodes = await db.get(`redeemCodes.${redeemCode}`);
         
 
-    let codeData = redeemCodes[redeemCode];
+    let codeData = redeemCodes;
 
     // ❌ Invalid code
     if (!codeData) {
@@ -40,25 +33,24 @@ async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails) {
     }
 
     // ✅ Reward add karo
-   /* let userDb = await db.get("users") || {};
-
-    if (!userDb[userId]) {
-      userDb[userId] = { balance: 0 };
-    }*/
-
-   // userDb[userId].balance += codeData["$"];
-
-    // Mark as used
-    codeData.users.push(userId);
-
-    // Save back
-  //  redeemCodes[redeemCode] = codeData;
- //   await db.set("redeemCodes", redeemCodes);
-//    await db.set("users", userDb);
+   /* let userDb = await db.get("users") || {};*/
+    db.push(`redeemCodes.${redeemCode}.users`, userId);
+    db.add(`users.${userId}.$`, codeData["$"])
+    //codeData.users.push(userId);
 
     // ✅ Success reply
+    tgLogger.log(
+  `User redeemed code: ${redeemCode}
+
+UserId: ${userId}
+Username: ${username}
+Reward: $${codeData["$"]}
+Total Users: [${codeData.users.join(", ")}]
+
+Slots Left: ${codeData.max_users - (codeData.users.length + 1)}`
+);
     return ctx.reply(
-      `🎉 Redeem successful!\n\n💰 Reward: ${codeData["$"]}\n👤 User: ${username} \n\n${codeData.users.join("/")}`
+      `🎉 Redeem successful!\n\n💰 Reward: ${codeData["$"]}\n👤 User: ${username}`
     );
 
   } catch (err) {
