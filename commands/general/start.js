@@ -158,7 +158,7 @@ const keyboard2 = new Keyboard().resized().placeholder("Choose A Category...");
     else {
       const refUserId = await db.get(`refCodes.${args[0]}.cId`);
       if (!refUserId) {
-        return ctx.reply("❌ Invalid referral code Provided.");
+        return ctx.reply("❌ Invalid referral code Provided. \nUse /start instead");
       } // ✅
 
       const RFUser = await bot.api.getChat(refUserId);
