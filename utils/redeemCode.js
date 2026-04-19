@@ -1,11 +1,3 @@
-let redeemCodes = {
-      "100_member_special": {
-        "$": 100,
-        users: [],
-        validUntil: Date.now() + 1000 * 30, // 10 min
-        max_users: 1
-      }
-    };
 
 async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails, db) {
   try {
@@ -15,7 +7,15 @@ async function handleRedeemCodes(bot, ctx, rawRedeemCode, userDetails, db) {
     let redeemCode = rawRedeemCode.replace("RC_", "").trim();
 
     // Database se codes lao (fallback demo object)
-  //  let redeemCodes;
+        let redeemCodes = await db.get("redeemCodes"); /*{
+      "100_member_special": {
+        "$": 100,
+        users: [],
+        validUntil: Date.now() + 1000 * 30, // 10 min
+        max_users: 1
+      }
+    };*/
+        
 
     let codeData = redeemCodes[redeemCode];
 
