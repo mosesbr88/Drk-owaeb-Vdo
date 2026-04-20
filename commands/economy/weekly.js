@@ -73,7 +73,7 @@ module.exports = {
     await db.add(`users.${userId}.$`, reward);
     await db.set(`users.${userId}.weekly`, now);
 
-    const totalCredits = userDetails.$ + reward;
+    const totalCredits = userDetails.$;
 
     await ctx.reply(
       `<b>🎁 Weekly Reward</b>\n\n` +
