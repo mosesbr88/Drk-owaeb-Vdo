@@ -28,8 +28,12 @@ module.exports = {
     const reward = Math.floor(Math.random() * 21) + 20;
 
     // add credits
+    try{
     await db.add(`users.${userId}.$`, reward);
-
+    } catch (wr){
+      await db.set(`users.${userId}.$`, reward);
+console.log(wr);
+    }
     // set last claim time
     await db.set(`users.${userId}.daily`, now);
 
